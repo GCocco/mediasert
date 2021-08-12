@@ -10,6 +10,7 @@ class Mediasert(ShowBase):
 
     def __init__(self):
         super().__init__()
+        self.disableMouse()
         # debug stuff:
         smile = self.loader.loadModel("./models/cube.egg")
         smile.reparentTo(self.render)

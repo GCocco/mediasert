@@ -20,8 +20,11 @@ class FPController(DirectObject, NodePath):
     def __init__(self, base):
 
         NodePath.__init__(self, "player")
+        self._mouseWatcher = base.mouseWatcherNode
+        self._win = base.win
         self.reparentTo(base.render)
-        self.camera = base.camera
+        self.camera = base.cam
+        self.camera.setZ(2)
         self.camera.reparentTo(self)
         # movement ontroller                                                                                                                                 
         self._inputs = {ControllerSettings.Forward: False,
@@ -71,6 +74,17 @@ class FPController(DirectObject, NodePath):
         dire = self._getDirection()
         if dire is not  Direction.Undefined:
             self.setPos(self, self._angleMap[dire])
+        if self._mouseWatcher.hasMouse():
+            x, y = self._mouseWatcher.getMouseX(), self._mouseWatcher.getMouseY()
+            print(x, y)
+            self.setH(self, -x * ControllerSettings.RotationSpeed)
+            self.camera.setP(self.camera, y *ControllerSettings.RotationSpeed)
+            props = self._win.getProperties()
+             
+            self._win.movePointer(0,
+                         props.getXSize() // 2,
+                         props.getYSize() // 2)
+            
         return task.again
 
     
