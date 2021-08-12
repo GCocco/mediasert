@@ -1,6 +1,6 @@
 # config file
 
-class Controller:
+class ControllerSettings:
     Forward = "w"
     Back = "s"
     Left = "a"

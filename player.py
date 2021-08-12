@@ -1,5 +1,8 @@
 from direct.showbase.DirectObject import DirectObject
-from .settings import ControllerSettings
+from panda3d.core import NodePath
+
+from settings import ControllerSettings
+from utils import Direction
 
 class PlayerController(DirectObject):
     def __init__(self):
@@ -7,22 +10,41 @@ class PlayerController(DirectObject):
                         ControllerSettings.Back: False,
                         ControllerSettings.Left: False,
                         ControllerSettings.Right: False}
+        self.accept(ControllerSettings.Forward, self.changeValue,
+                    extraArgs=[ControllerSettings.Forward, True])
+        self.accept(ControllerSettings.Back, self.changeValue,
+                    extraArgs=[ControllerSettings.Back, True])
+        self.accept(ControllerSettings.Left, self.changeValue,
+                    extraArgs=[ControllerSettings.Left, True])
+        self.accept(ControllerSettings.Right, self.changeValue,
+                    extraArgs=[ControllerSettings.Right, True])
+        
+        self.accept((ControllerSettings.Forward + "-up"), self.changeValue,
+                    extraArgs= [ControllerSettings.Forward, False])
+        self.accept((ControllerSettings.Back + "-up"), self.changeValue,
+                    extraArgs=[ControllerSettings.Back, False])
+        self.accept((ControllerSettings.Left + "-up"), self.changeValue,
+                    extraArgs=[ControllerSettings.Left, False])
+        self.accept((ControllerSettings.Right + "-up"), self.changeValue,
+                    extraArgs=[ControllerSettings.Right, False])
 
     def changeValue(self, key, val):
         self._inputs[key] = val
 
     def getDirection(self):
-        direction = 0
+        dire = 0
         if self._inputs[ControllerSettings.Forward]:
-            direction += 1
+            dire += 1
         if self._inputs[ControllerSettings.Back]:
-            direction += 2
+            dire -= 1
         if self._inputs[ControllerSettings.Left]:
-            direction += 4
+            dire -= 4
         if self._inputs[ControllerSettings.Right]:
-            direction += 8
-        return direction
-        
+            dire += 4
+        try:
+            return Direction(dire)
+        except ValueError:
+            return Direction.Undefined
 
 
 class FPController(DirectObject, NodePath):
@@ -32,9 +54,10 @@ class FPController(DirectObject, NodePath):
         self.camera = base.camera
         
         # movement ontroller
-        
         self.camera.reparentTo(self)
 
-        self.accept("l", self.ls)
+        self.controller = PlayerController()
+        
+        self.accept("p", lambda: print(self.controller.getDirection()))
         pass
     pass

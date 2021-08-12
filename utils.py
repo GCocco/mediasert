@@ -10,4 +10,5 @@ class Direction(IntEnum):
     ForwardLeft = Forward + Left
     BackRight = Back + Right
     BackLeft = Back + Left
+    Undefined = 0
     pass
