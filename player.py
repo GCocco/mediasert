@@ -12,10 +12,10 @@ class FPController(DirectObject, NodePath):
         Direction.Back: (0, -ControllerSettings.Speed, 0),
         Direction.Left: (-ControllerSettings.Speed, 0, 0),
         Direction.Right: (ControllerSettings.Speed, 0, 0),
-        Direction.ForwardRight: (SIN45, SIN45, 0),
-        Direction.ForwardLeft: (-SIN45, SIN45, 0),
-        Direction.BackRight: (SIN45, -SIN45, 0),
-        Direction.BackLeft: (-SIN45, SIN45, 0)}
+        Direction.ForwardRight: (SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, 0),
+        Direction.ForwardLeft: (-SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, 0),
+        Direction.BackRight: (SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, 0),
+        Direction.BackLeft: (-SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, 0)}
     
     def __init__(self, base):
 
@@ -76,9 +76,15 @@ class FPController(DirectObject, NodePath):
             self.setPos(self, self._angleMap[dire])
         if self._mouseWatcher.hasMouse():
             x, y = self._mouseWatcher.getMouseX(), self._mouseWatcher.getMouseY()
-            print(x, y)
             self.setH(self, -x * ControllerSettings.RotationSpeed)
             self.camera.setP(self.camera, y *ControllerSettings.RotationSpeed)
+            if self.camera.getP() > ControllerSettings.MaxP:
+                self.camera.setP(ConmtrollerSettings.MaxP)
+            elif self.camera.getP() < ControllerSettings.MinP:
+                self.camera.setP(ControllerSettings.MinP)
+
+            print(self.camera.getP())
+            
             props = self._win.getProperties()
              
             self._win.movePointer(0,
