@@ -81,10 +81,7 @@ class FPController(DirectObject, NodePath):
             if self.camera.getP() > ControllerSettings.MaxP:
                 self.camera.setP(ConmtrollerSettings.MaxP)
             elif self.camera.getP() < ControllerSettings.MinP:
-                self.camera.setP(ControllerSettings.MinP)
-
-            print(self.camera.getP())
-            
+                self.camera.setP(ControllerSettings.MinP)            
             props = self._win.getProperties()
              
             self._win.movePointer(0,
