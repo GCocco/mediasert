@@ -3,6 +3,8 @@ from panda3d.core import NodePath
 
 from settings import ControllerSettings
 from utils import Direction
+from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher, BitMask32
+
 
 SIN45 = 0.7071
 
@@ -22,6 +24,7 @@ class FPController(DirectObject, NodePath):
         NodePath.__init__(self, "player")
         self._mouseWatcher = base.mouseWatcherNode
         self._win = base.win
+        self._renderNP = base.render
         self.reparentTo(base.render)
         self.camera = base.cam
         self.camera.setZ(2)
@@ -52,6 +55,24 @@ class FPController(DirectObject, NodePath):
 
         self.doMethodLater(.01, self._controllerTask, "mnove-it")
 
+        # collision management
+
+        self._trav = CollisionTraverser()
+        _col_node = CollisionNode("playerCollider")
+        _col_node.addSolid(CollisionSphere(0.0, 0.0, .15, .5))
+        _col_node.setFromCollideMask(BitMask32(7)) 
+        _col_node.setIntoCollideMask(BitMask32.allOff())
+        _col_np = self.attachNewNode(_col_node)
+        self._pusher = CollisionHandlerPusher()
+        self._pusher.addCollider(_col_np, self)
+        self._trav.addCollider(_col_np, self._pusher)
+
+        #debug
+
+        _col_np.show()
+        self.accept("l", base.render.ls)
+        self.accept("p", lambda: print(self.getPos()))
+        
     def _changeValue(self, key, val):
         self._inputs[key] = val
 
@@ -87,6 +108,7 @@ class FPController(DirectObject, NodePath):
             self._win.movePointer(0,
                          props.getXSize() // 2,
                          props.getYSize() // 2)
+        self._trav.traverse(self._renderNP)
             
         return task.again
 
