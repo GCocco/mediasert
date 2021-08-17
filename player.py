@@ -4,7 +4,7 @@ from panda3d.core import NodePath
 from settings import ControllerSettings
 from utils import Direction
 from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher, BitMask32
-
+from panda3d.core import CollisionLine, CollisionHandlerQueue
 
 SIN45 = 0.7071
 
@@ -27,7 +27,8 @@ class FPController(DirectObject, NodePath):
         self._renderNP = base.render
         self.reparentTo(base.render)
         self.camera = base.cam
-        self.camera.setZ(2)
+        self.camera.setZ(2.5)
+        self.camera.setY(-.2)
         self.camera.reparentTo(self)
         # movement ontroller                                                                                                                                 
         self._inputs = {ControllerSettings.Forward: False,
@@ -59,7 +60,7 @@ class FPController(DirectObject, NodePath):
 
         self._trav = CollisionTraverser()
         _col_node = CollisionNode("playerCollider")
-        _col_node.addSolid(CollisionSphere(0.0, 0.0, .15, .5))
+        _col_node.addSolid(CollisionSphere(0.0, 0.0, 0.0, 1.0))
         _col_node.setFromCollideMask(BitMask32(7)) 
         _col_node.setIntoCollideMask(BitMask32.allOff())
         _col_np = self.attachNewNode(_col_node)
@@ -67,6 +68,16 @@ class FPController(DirectObject, NodePath):
         self._pusher.addCollider(_col_np, self)
         self._trav.addCollider(_col_np, self._pusher)
 
+        # raycast interaction
+
+        _ray_node = CollisionNode("RayCollider")
+        _ray_node.addSolid(CollisionLine(self.camera.getPos(), (1, 0, 0)))
+        _ray_node.setFromCollideMask(BitMask32(56))
+        _ray_node.setIntoCollideMask(BitMask32.allOff())
+        _ray_np = self.camera.attachNewNode(_ray_node)
+        self._queue = CollisionHandlerQueue()
+        self._interact_trav = CollisionTraverser()
+        self._interact_trav.addCollider(_ray_np, self._queue)
         #debug
 
         _col_np.show()
@@ -111,6 +122,12 @@ class FPController(DirectObject, NodePath):
         self._trav.traverse(self._renderNP)
             
         return task.again
+
+    def _interactTask(self, task):
+        self._interact_trav.traverse()
+        if self._queue.getNumEntries():
+            self._queue.sortEntries()
+            print(self._queue.getEntry(0))
 
     
 
