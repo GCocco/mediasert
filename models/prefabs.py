@@ -2,6 +2,7 @@
 
 from panda3d.core import NodePath
 from config import Loader
+from utils import BitMasks
 
 class Prefab(NodePath):
     def __init__(self, model_path):
@@ -18,5 +19,7 @@ class Door_01(Prefab):
         super().__init__("./models/maps/maps_props/door_01.egg")
         if placeholder:
             self.copyTransform(placeholder)
-
+        self.find("**/+CollisionNode").node().setIntoCollideMask(BitMasks.Interactable)
+        self.find("**/+CollisionNode").node().setFromCollideMask(BitMasks.Empty)
+        self.find("**/+CollisionNode").show()
 PREFAB_MAP = {"Door_01": Door_01}

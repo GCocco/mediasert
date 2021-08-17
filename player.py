@@ -2,9 +2,9 @@ from direct.showbase.DirectObject import DirectObject
 from panda3d.core import NodePath
 
 from settings import ControllerSettings
-from utils import Direction
-from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher, BitMask32
-from panda3d.core import CollisionLine, CollisionHandlerQueue
+from utils import Direction, BitMasks
+from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher
+from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
 
 SIN45 = 0.7071
 
@@ -26,7 +26,7 @@ class FPController(DirectObject, NodePath):
         self._win = base.win
         self._renderNP = base.render
         self.reparentTo(base.render)
-        self.camera = base.cam
+        self.camera = base.camera
         self.camera.setZ(2.5)
         self.camera.setY(-.2)
         self.camera.reparentTo(self)
@@ -60,9 +60,9 @@ class FPController(DirectObject, NodePath):
 
         self._trav = CollisionTraverser()
         _col_node = CollisionNode("playerCollider")
-        _col_node.addSolid(CollisionSphere(0.0, 0.0, 0.0, 1.0))
-        _col_node.setFromCollideMask(BitMask32(7)) 
-        _col_node.setIntoCollideMask(BitMask32.allOff())
+        _col_node.addSolid(CollisionSphere(0.0, 0.0, 0.0, 1.5))
+        _col_node.setFromCollideMask(BitMasks.Solid) 
+        _col_node.setIntoCollideMask(BitMasks.Empty)
         _col_np = self.attachNewNode(_col_node)
         self._pusher = CollisionHandlerPusher()
         self._pusher.addCollider(_col_np, self)
@@ -71,18 +71,19 @@ class FPController(DirectObject, NodePath):
         # raycast interaction
 
         _ray_node = CollisionNode("RayCollider")
-        _ray_node.addSolid(CollisionLine(self.camera.getPos(), (1, 0, 0)))
-        _ray_node.setFromCollideMask(BitMask32(56))
-        _ray_node.setIntoCollideMask(BitMask32.allOff())
-        _ray_np = self.camera.attachNewNode(_ray_node)
+        _ray_np = base.camera.attachNewNode(_ray_node)
+        _ray_node.setFromCollideMask(BitMasks.Interactable)
+        _ray_node.setIntoCollideMask(BitMasks.Empty)
+        _ray_node.addSolid(CollisionRay())
         self._queue = CollisionHandlerQueue()
         self._interact_trav = CollisionTraverser()
         self._interact_trav.addCollider(_ray_np, self._queue)
+        _ray_np.setPos(self.camera.getPos())
+        self.doMethodLater(.02, self._interactTask, "interact") 
         #debug
-
-        _col_np.show()
         self.accept("l", base.render.ls)
         self.accept("p", lambda: print(self.getPos()))
+        self.accept("o", base.render.ls)
         
     def _changeValue(self, key, val):
         self._inputs[key] = val
@@ -111,7 +112,7 @@ class FPController(DirectObject, NodePath):
             self.setH(self, -x * ControllerSettings.RotationSpeed)
             self.camera.setP(self.camera, y *ControllerSettings.RotationSpeed)
             if self.camera.getP() > ControllerSettings.MaxP:
-                self.camera.setP(ConmtrollerSettings.MaxP)
+                self.camera.setP(ControllerSettings.MaxP)
             elif self.camera.getP() < ControllerSettings.MinP:
                 self.camera.setP(ControllerSettings.MinP)            
             props = self._win.getProperties()
@@ -124,10 +125,11 @@ class FPController(DirectObject, NodePath):
         return task.again
 
     def _interactTask(self, task):
-        self._interact_trav.traverse()
+        self._interact_trav.traverse(self._renderNP)
         if self._queue.getNumEntries():
             self._queue.sortEntries()
             print(self._queue.getEntry(0))
+        return task.again
 
     
 

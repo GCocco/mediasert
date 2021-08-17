@@ -1,5 +1,6 @@
 # stuff
 from enum import IntEnum
+from panda3d.core import BitMask32
 
 class Direction(IntEnum):
     Forward = 1
@@ -12,3 +13,8 @@ class Direction(IntEnum):
     BackLeft = Back + Left
     Undefined = 0
     pass
+
+class BitMasks:
+    Solid = BitMask32(7)
+    Interactable = BitMask32(56)
+    Empty = BitMask32.allOff()
