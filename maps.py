@@ -2,6 +2,7 @@
 
 from panda3d.core import NodePath, BitMask32
 from direct.showbase.DirectObject import DirectObject
+from models.prefabs import PREFAB_MAP
 
 class EmptyMap(DirectObject, NodePath):
     _bitmask = BitMask32(7)
@@ -15,6 +16,12 @@ class EmptyMap(DirectObject, NodePath):
     
     def parse(self):
         for placeholder in self.findAllMatches("**/=prefab"):
+            new_node = PREFAB_MAP[placeholder.getTag("prefab")]()
+            new_node.reparentTo(self)
+            new_node.setPos(placeholder.getPos())
+            new_node.setHpr(placeholder.getHpr())
+            new_node.setScale(placeholder.getScale())
+            placeholder.removeNode()
             print("found prefab", placeholder.getTag("prefab"))
     pass
 
