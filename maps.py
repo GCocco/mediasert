@@ -4,10 +4,18 @@ from panda3d.core import NodePath, BitMask32
 from direct.showbase.DirectObject import DirectObject
 
 class EmptyMap(DirectObject, NodePath):
+    _bitmask = BitMask32(7)
+    
     def __init__(self, base, name="map"):
         NodePath.__init__(self, name)
         self.reparentTo(base.render)
-        pass
+
+    def setMask(self):
+        self.find("**/+CollisionNode").node().setIntoCollideMask(self._bitmask)
+    
+    def parse(self):
+        for placeholder in self.findAllMatches("**/=prefab"):
+            print("found prefab", placeholder.getTag("prefab"))
     pass
 
 
@@ -16,4 +24,5 @@ class Map_01(EmptyMap):
         super().__init__(base, "lvl_01")
         lvl_map = base.loader.loadModel("./models/maps/level_01_intro.egg")
         lvl_map.reparentTo(self)
-        self.find("**/+CollisionNode").node().setIntoCollideMask(BitMask32(7))
+        self.setMask()
+        self.parse()
