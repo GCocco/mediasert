@@ -16,11 +16,8 @@ class EmptyMap(DirectObject, NodePath):
     
     def parse(self):
         for placeholder in self.findAllMatches("**/=prefab"):
-            new_node = PREFAB_MAP[placeholder.getTag("prefab")]()
+            new_node = PREFAB_MAP[placeholder.getTag("prefab")](placeholder=placeholder)
             new_node.reparentTo(self)
-            new_node.setPos(placeholder.getPos())
-            new_node.setHpr(placeholder.getHpr())
-            new_node.setScale(placeholder.getScale())
             placeholder.removeNode()
             print("found prefab", placeholder.getTag("prefab"))
     pass
