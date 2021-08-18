@@ -16,5 +16,9 @@ class Direction(IntEnum):
 
 class BitMasks:
     Solid = BitMask32(7)
-    Interactable = BitMask32(56)
+    Interactable = BitMask32(8)
     Empty = BitMask32.allOff()
+
+    @staticmethod
+    def fromInt(num):
+        return BitMask32(num)

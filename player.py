@@ -74,16 +74,25 @@ class FPController(DirectObject, NodePath):
         _ray_np = base.camera.attachNewNode(_ray_node)
         _ray_node.setFromCollideMask(BitMasks.Interactable)
         _ray_node.setIntoCollideMask(BitMasks.Empty)
-        _ray_node.addSolid(CollisionRay())
+        _ray_np.show()
+        _ray_node.addSolid(CollisionLine((.0, .0, .0), (.0, -.4,.0)))
         self._queue = CollisionHandlerQueue()
         self._interact_trav = CollisionTraverser()
         self._interact_trav.addCollider(_ray_np, self._queue)
-        _ray_np.setPos(self.camera.getPos())
         self.doMethodLater(.02, self._interactTask, "interact") 
+
         #debug
-        self.accept("l", base.render.ls)
+        self.accept("l", self.ls)
         self.accept("p", lambda: print(self.getPos()))
         self.accept("o", base.render.ls)
+
+        self.DEBUG_TASKFLAG = False
+        
+        def dbg_cam():
+            base.oobe()
+            self.DEBUG_TASKFLAG = not self.DEBUG_TASKFLAG
+
+        self.accept("k", dbg_cam) 
         
     def _changeValue(self, key, val):
         self._inputs[key] = val
@@ -108,6 +117,8 @@ class FPController(DirectObject, NodePath):
         if dire is not  Direction.Undefined:
             self.setPos(self, self._angleMap[dire])
         if self._mouseWatcher.hasMouse():
+            if self.DEBUG_TASKFLAG:
+                return task.again
             x, y = self._mouseWatcher.getMouseX(), self._mouseWatcher.getMouseY()
             self.setH(self, -x * ControllerSettings.RotationSpeed)
             self.camera.setP(self.camera, y *ControllerSettings.RotationSpeed)
@@ -128,7 +139,7 @@ class FPController(DirectObject, NodePath):
         self._interact_trav.traverse(self._renderNP)
         if self._queue.getNumEntries():
             self._queue.sortEntries()
-            print(self._queue.getEntry(0))
+            print(self._queue.getEntry(0).getIntoNode())
         return task.again
 
     
