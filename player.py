@@ -5,8 +5,24 @@ from settings import ControllerSettings
 from utils import Direction, BitMasks
 from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher
 from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
+from panda3d.core import Thread
 
 SIN45 = 0.7071
+
+
+class _InteractHandler:
+    def __init__(self):
+        self._last_collided = None
+
+    def __call__(self, new):
+        if new != self._last_collided:
+            self._last_collided = new
+            print("now interacting with", self._last_collided)
+            if new is not None:
+                print("collider_tag:", new.getTag("interactable_id"))
+            # fai roba in base al tag dell'asset
+            
+
 
 class FPController(DirectObject, NodePath):
     _angleMap = {
@@ -79,7 +95,9 @@ class FPController(DirectObject, NodePath):
         self._queue = CollisionHandlerQueue()
         self._interact_trav = CollisionTraverser()
         self._interact_trav.addCollider(_ray_np, self._queue)
-        self.doMethodLater(.02, self._interactTask, "interact") 
+        self.doMethodLater(.02, self._interactTask, "interact")
+
+        self._interact_handler = _InteractHandler()
 
         #debug
         self.accept("l", self.ls)
@@ -139,7 +157,9 @@ class FPController(DirectObject, NodePath):
         self._interact_trav.traverse(self._renderNP)
         if self._queue.getNumEntries():
             self._queue.sortEntries()
-            print(self._queue.getEntry(0).getIntoNode())
+            self._interact_handler(self._queue.getEntry(0).getIntoNode())
+            return task.again
+        self._interact_handler(None)
         return task.again
 
     

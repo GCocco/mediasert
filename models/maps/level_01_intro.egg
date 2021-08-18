@@ -1,7 +1,4 @@
 <CoordinateSystem> { Z-up } 
-<Material> map_01 {
-}
-
 <Material> placeholder {
   <Scalar> diffr { 0.640000 }
   <Scalar> diffg { 0.640000 }
@@ -16,6 +13,9 @@
   <Scalar> emitr { 0.000000 }
   <Scalar> emitg { 0.000000 }
   <Scalar> emitb { 0.000000 }
+}
+
+<Material> map_01 {
 }
 
 <Texture> level_01 {
@@ -2149,6 +2149,7 @@
     }
     <Group> placeholder.002 {
       <Tag> prefab { Door_01 }
+      <Tag> interactable_id { colsed_door }
       <Transform> {
         <Matrix4> {
           -4.371138828673793e-08 1.0 0.0 0.0 
@@ -2451,6 +2452,7 @@
     }
     <Group> placeholder.001 {
       <Tag> prefab { Door_01 }
+      <Tag> interactable_id { closed_door }
       <Transform> {
         <Matrix4> {
           -4.371138828673793e-08 -1.0 0.0 0.0 
