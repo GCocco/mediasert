@@ -2,17 +2,16 @@
 
 from direct.showbase.ShowBase import ShowBase
 
-from config import Loader
+import config
 
 from player import FPController
 from maps import Map_01
-
 
 class Mediasert(ShowBase):
 
     def __init__(self):
         super().__init__()
-        Loader.init(self.loader)
+        config.init_config(self)
         self.disableMouse()
         self.accept("escape", exit)
     pass

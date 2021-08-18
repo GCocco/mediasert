@@ -1,12 +1,25 @@
+def init_config(base):
+    _Globals.base = base
+    Loader._LOADER = base.loader
+    GUI.init()
+
+class _Globals:
+    base = None
+
 class Loader:
     _LOADER = None
-    @staticmethod
-    def init(panda_loader):
-        if Loader._LOADER is not None:
-            raise Exception("loader already defined")
-        Loader._LOADER = panda_loader
-
+    
     @staticmethod
     def loadModel(path):
         return Loader._LOADER.loadModel(path)
 
+
+import gui
+
+class GUI:
+    NoticeBox = gui.NoticeBox()
+
+    @staticmethod
+    def init():
+        GUI.NoticeBox.reparentTo(_Globals.base.aspect2d)
+    
