@@ -1,15 +1,11 @@
 # events and interactions utils
 
 
-class InteractableEvent:
-    def __init__(self, notice, on_click):
-        pass
-    pass
-
 
 class Event:
-    def __init__(self):
+    def __init__(self, onClick=None):
         self._next = None
+        self._onclick = onClick
 
     def append(self, next):
         self._next = next
@@ -19,13 +15,24 @@ class Event:
         return self._next
 
     @property
+    def onClick(self):
+        return self._onclick
+
+    @property
     def type(self):
         return None
-
+    
+    @staticmethod
+    def chainEvents(start_event, *args):
+        last = start_event
+        for event in args:
+            start_event.append(event)
+        return last
+            
 
 class NoticeText(Event):
-    def __init__(self, text):
-        super().__init__()
+    def __init__(self, text, **kwargs):
+        super().__init__(**kwargs)
         self._text = text
 
     @property
@@ -37,5 +44,5 @@ class NoticeText(Event):
         return "Notice"
 
 
-EVENT_MAP = {"closed_door": NoticeText("la porta è chiusa")}
+EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("Questa porta è chiusa"))}
         

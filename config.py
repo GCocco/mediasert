@@ -3,8 +3,12 @@ def init_config(base):
     Loader._LOADER = base.loader
     GUI.init()
 
+def init_player(player):
+    _Globals.playercontroller = player
+    
 class _Globals:
     base = None
+    playercontroller = None
 
 class Loader:
     _LOADER = None
@@ -26,17 +30,39 @@ class GUI:
 
 from direct.fsm.FSM import FSM
         
-class _GUIFSM(FSM):
+class _GUI_FSM(FSM):
     
     def __init__(self):
         super().__init__("gui-fsm")
         pass
 
-    def enterNotice(self, event):
-        Gui.NoticeBox.changeText(event.text)
-        Gui.NoticeBox.show()
+    def __call__(self, event):
+        if event is None:
+            return
+        print("requesting", event)
+        self.request(event.type, event)
         return
 
-    def exitNotice(self, event):
-        Gui.NoticeBox.hide()
+    def enterNotice(self, event):
+        GUI.NoticeBox.changeText(event.text)
+        GUI.NoticeBox.show()
         return
+
+    def exitNotice(self):
+        GUI.NoticeBox.hide()
+        return
+
+    def togglePlayerMovement(self, val):
+        _Globals.playercontroller.setMovement(val)
+
+    def close(self):
+        self.request("Empty")
+        return
+    
+    def enterEmpty(self):
+        pass
+
+    def exitEmpty(self):
+        pass
+
+GUI_FSM = _GUI_FSM()

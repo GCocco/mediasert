@@ -6,21 +6,35 @@ from utils import Direction, BitMasks
 from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher
 from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
 from panda3d.core import Thread
-
+from events import EVENT_MAP
+from config import GUI_FSM
 SIN45 = 0.7071
 
 
-class _InteractHandler:
+class _InteractHandler(DirectObject):
     def __init__(self):
+        self._interrupt = False
         self._last_collided = None
+
+    def onHover(self):
+        if self._last_collided is not None:
+            GUI_FSM(EVENT_MAP[self._last_collided.getTag("interactable_id")])
+
+    def onClick(self):
+        if self._last_collided is not None:
+            GUI_FSM(EVENT_MAP[self._last_collided.getTag("interactable_id")].onClick)
+    
+    def onHoverLeave(self):
+        if self._last_collided:
+            GUI_FSM.close()
+        return
 
     def __call__(self, new):
         if new != self._last_collided:
+            self.onHoverLeave()
             self._last_collided = new
-            print("now interacting with", self._last_collided)
             if new is not None:
-                print("collider_tag:", new.getTag("interactable_id"))
-            # fai roba in base al tag dell'asset
+                self.onHover()
             
 
 
@@ -70,7 +84,7 @@ class FPController(DirectObject, NodePath):
         self.accept((ControllerSettings.Right + "-up"), self._changeValue,
                     extraArgs=[ControllerSettings.Right, False])
 
-        self.doMethodLater(.01, self._controllerTask, "mnove-it")
+        self.doMethodLater(.01, self._controllerTask, "move-task")
 
         # collision management
 
@@ -95,7 +109,7 @@ class FPController(DirectObject, NodePath):
         self._queue = CollisionHandlerQueue()
         self._interact_trav = CollisionTraverser()
         self._interact_trav.addCollider(_ray_np, self._queue)
-        self.doMethodLater(.02, self._interactTask, "interact")
+        self.doMethodLater(.02, self._interactTask, "interact-task")
 
         self._interact_handler = _InteractHandler()
 
@@ -110,7 +124,19 @@ class FPController(DirectObject, NodePath):
             base.oobe()
             self.DEBUG_TASKFLAG = not self.DEBUG_TASKFLAG
 
-        self.accept("k", dbg_cam) 
+        self.accept("k", dbg_cam)
+        self._moveswitch = True
+        self.accept("mouse1", self._interact_handler.onClick)
+
+    def setMovement(self, val):
+        if val and not self._moveswitch:
+            self.doMethodLater(.01, self._controllerTask, "movement-task")
+            self.doMethodLater(.02, self._interactTask, "interact-task")
+            self._moveswitch = True
+        elif not val and self._moveswitch:
+            self.removeAllTasks()
+            self._moveswitch = False
+        return
         
     def _changeValue(self, key, val):
         self._inputs[key] = val

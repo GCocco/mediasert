@@ -2149,7 +2149,7 @@
     }
     <Group> placeholder.002 {
       <Tag> prefab { Door_01 }
-      <Tag> interactable_id { colsed_door }
+      <Tag> interactable_id { closed_door }
       <Transform> {
         <Matrix4> {
           -4.371138828673793e-08 1.0 0.0 0.0 

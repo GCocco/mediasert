@@ -21,5 +21,6 @@ class Mediasert(ShowBase):
 if __name__ == "__main__":
     ms = Mediasert()
     me = FPController(ms)
+    config.init_player(me)
     map = Map_01(ms)
     ms.run()
