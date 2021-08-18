@@ -23,3 +23,20 @@ class GUI:
     def init():
         GUI.NoticeBox.reparentTo(_Globals.base.aspect2d)
     
+
+from direct.fsm.FSM import FSM
+        
+class _GUIFSM(FSM):
+    
+    def __init__(self):
+        super().__init__("gui-fsm")
+        pass
+
+    def enterNotice(self, event):
+        Gui.NoticeBox.changeText(event.text)
+        Gui.NoticeBox.show()
+        return
+
+    def exitNotice(self, event):
+        Gui.NoticeBox.hide()
+        return

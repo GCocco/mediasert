@@ -15,8 +15,12 @@ class Event:
         self._next = next
 
     @property
-    def getNext(self):
+    def next(self):
         return self._next
+
+    @property
+    def type(self):
+        return None
 
 
 class NoticeText(Event):
@@ -25,9 +29,12 @@ class NoticeText(Event):
         self._text = text
 
     @property
-    def getText(self):
+    def text(self):
         return self._text
 
+    @property
+    def type(self):
+        return "Notice"
 
 
 EVENT_MAP = {"closed_door": NoticeText("la porta è chiusa")}
