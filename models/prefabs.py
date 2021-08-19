@@ -39,6 +39,17 @@ class CoffeMachine(Prefab):
         if placeholder:
             self.copyTransform(placeholder)
         self.set_masks()
+
+    def dispense_coffe(self):
+        coffe = Coffe(self.find("**/cup_placeholder"))
+        coffe.reparentTo(self)
+
+class Coffe(Prefab):
+    def __init__(self, placeholder=None):
+        super().__init__("./models/props/coffe_cup.egg")
+        if placeholder:
+            self.copyTransform(placeholder)
+        self.set_masks()
         
 PREFAB_MAP = {"Door_01": Door_01,
               "CoffeMachine": CoffeMachine}
