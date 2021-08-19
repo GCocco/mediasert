@@ -44,5 +44,6 @@ class NoticeText(Event):
         return "Notice"
 
 
-EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("Questa porta è chiusa"))}
+EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("Questa porta è chiusa")),
+             "kaffe": NoticeText("Compra Kafffffèèèèèèèèèèèèèè")}
         

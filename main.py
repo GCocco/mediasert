@@ -1,6 +1,7 @@
 # mediasert game by GCocco
 
 from direct.showbase.ShowBase import ShowBase
+from panda3d.core import DirectionalLight
 
 import config
 
@@ -22,5 +23,10 @@ if __name__ == "__main__":
     ms = Mediasert()
     me = FPController(ms)
     config.init_player(me)
+
+    #debug
+    light = me.attachNewNode(DirectionalLight("light"))
+    ms.render.setLight(light)
+    
     map = Map_01(ms)
     ms.run()

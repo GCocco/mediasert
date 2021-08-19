@@ -1,5 +1,5 @@
 <CoordinateSystem> { Z-up } 
-<Material> Material.005 {
+<Material> macchinetta_caffe {
 }
 
 <Texture> coffe_machine {
@@ -1023,273 +1023,303 @@
     
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-0.707107 -0.707107 0.000000}
       <VertexRef> { 0 1 2 3 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 4 5 6 7 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000001 0.000000 1.000000}
       <VertexRef> { 8 9 10 11 12 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-0.707107 -0.707107 0.000000}
       <VertexRef> { 13 14 15 16 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 0.000000 1.000000}
       <VertexRef> { 17 18 19 20 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-1.000000 0.000000 0.000000}
       <VertexRef> { 21 22 23 24 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.707107 -0.707107 0.000000}
       <VertexRef> { 25 26 27 28 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 29 30 31 32 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {1.000000 0.000000 0.000000}
       <VertexRef> { 33 34 35 36 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-1.000000 0.000000 0.000000}
       <VertexRef> { 37 38 39 40 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 0.000000 -1.000000}
       <VertexRef> { 41 42 43 44 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {1.000000 0.000000 0.000000}
       <VertexRef> { 45 46 47 48 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 49 50 51 52 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.707107 -0.707107 0.000000}
       <VertexRef> { 53 54 55 56 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-1.000000 0.000000 0.000000}
       <VertexRef> { 57 58 59 60 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-0.707107 -0.707107 0.000000}
       <VertexRef> { 61 62 63 64 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 65 66 67 68 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 69 70 71 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {1.000000 0.000000 0.000000}
       <VertexRef> { 72 73 74 75 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 0.000000 1.000000}
       <VertexRef> { 76 77 78 79 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 80 81 82 83 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 84 85 86 87 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 0.000000 1.000000}
       <VertexRef> { 88 89 90 91 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 92 93 94 95 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 96 97 98 99 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 100 101 102 103 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 104 105 106 107 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 108 109 110 111 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 112 113 114 115 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 116 117 118 119 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -1.000000 0.000000}
       <VertexRef> { 120 121 122 123 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 0.000000 1.000000}
       <VertexRef> { 124 125 126 127 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 0.000000 -1.000000}
       <VertexRef> { 128 129 130 131 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {1.000000 0.000000 0.000000}
       <VertexRef> { 132 133 134 135 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-1.000000 0.000000 -0.000000}
       <VertexRef> { 136 137 138 139 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-1.000000 0.000000 0.000000}
       <VertexRef> { 140 141 142 143 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.499999 -0.499999 0.707108}
       <VertexRef> { 144 145 146 147 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-0.499999 -0.499999 0.707108}
       <VertexRef> { 148 149 150 151 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-0.707106 0.000000 0.707108}
       <VertexRef> { 152 153 154 155 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -0.707106 0.707107}
       <VertexRef> { 156 157 158 159 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.707106 0.000000 0.707108}
       <VertexRef> { 160 161 162 163 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -0.707106 0.707107}
       <VertexRef> { 164 165 166 167 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -0.707106 0.707107}
       <VertexRef> { 168 169 170 171 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {0.000000 -0.707106 0.707107}
       <VertexRef> { 172 173 174 175 <Ref> { coffe_machine }} 
     }
     <Polygon> {
       <TRef> { coffe_machine }
-      <MRef> { Material.005 }
+      <MRef> { macchinetta_caffe }
       <Normal> {-0.000001 0.000000 1.000000}
       <VertexRef> { 176 177 178 179 180 <Ref> { coffe_machine }} 
+    }
+    <Group> machine_interact {
+      <Collide> { Polyset Descend }
+      <Tag> mask { interactable }
+      <Tag> interactable_id { kaffe }
+      <Transform> {
+        <Matrix4> {
+          1.0 0.0 0.0 0.0 
+          0.0 1.0 0.0 0.0 
+          0.0 0.0 1.0 0.0 
+          0.0 0.0 0.0 1.0 
+        }
+      }
+      
+      <VertexPool> machine_interact {
+      
+        <Vertex> 0 {0.418208 -1.296314 1.950784
+        }
+        <Vertex> 1 {0.794529 -1.296314 1.950784
+        }
+        <Vertex> 2 {0.794529 -1.296314 3.408380
+        }
+        <Vertex> 3 {0.418208 -1.296314 3.408380
+        }}
+      
+      
+      <Polygon> {
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 0 1 2 3 <Ref> { machine_interact }} 
+      }
     }
     <Group> coffe_machine_collider {
       <Collide> { Polyset Descend }
@@ -1306,124 +1336,52 @@
       <VertexPool> coffe_machine_collider {
       
         <Vertex> 0 {1.074324 0.000000 4.135640
-          <UV>  {
-            0.758216 0.723966 
-          }
         }
         <Vertex> 1 {1.074324 -1.301878 4.135640
-          <UV>  {
-            0.568320 0.723967 
-          }
         }
         <Vertex> 2 {1.074324 -1.301878 0.000000
-          <UV>  {
-            0.568320 0.000146 
-          }
         }
         <Vertex> 3 {1.074324 0.000000 0.000000
-          <UV>  {
-            0.758215 0.000146 
-          }
         }
         <Vertex> 4 {-1.074324 -1.301878 0.000000
-          <UV>  {
-            0.190042 0.000146 
-          }
         }
         <Vertex> 5 {-1.074324 -1.301878 4.135640
-          <UV>  {
-            0.190042 0.723967 
-          }
         }
         <Vertex> 6 {-1.074324 0.000000 4.135640
-          <UV>  {
-            0.000146 0.723967 
-          }
         }
         <Vertex> 7 {-1.074324 0.000000 0.000000
-          <UV>  {
-            0.000146 0.000146 
-          }
         }
         <Vertex> 8 {-1.074324 0.000000 0.000000
-          <UV>  {
-            0.000146 0.000146 
-          }
         }
         <Vertex> 9 {-1.074324 0.000000 4.135640
-          <UV>  {
-            0.000146 0.723967 
-          }
         }
         <Vertex> 10 {1.074324 0.000000 4.135640
-          <UV>  {
-            0.980251 0.000146 
-          }
         }
         <Vertex> 11 {1.074324 0.000000 0.000000
-          <UV>  {
-            0.758215 0.000146 
-          }
         }
         <Vertex> 12 {-1.074324 -1.301878 0.000000
-          <UV>  {
-            0.190042 0.000146 
-          }
         }
         <Vertex> 13 {1.074324 -1.301878 0.000000
-          <UV>  {
-            0.568320 0.000146 
-          }
         }
         <Vertex> 14 {1.074324 -1.301878 4.135640
-          <UV>  {
-            0.568320 0.723967 
-          }
         }
         <Vertex> 15 {-1.074324 -1.301878 4.135640
-          <UV>  {
-            0.190042 0.723967 
-          }
         }
         <Vertex> 16 {-1.074324 -1.301878 0.000000
-          <UV>  {
-            0.190042 0.000146 
-          }
         }
         <Vertex> 17 {-1.074324 0.000000 0.000000
-          <UV>  {
-            0.000146 0.000146 
-          }
         }
         <Vertex> 18 {1.074324 0.000000 0.000000
-          <UV>  {
-            0.758215 0.000146 
-          }
         }
         <Vertex> 19 {1.074324 -1.301878 0.000000
-          <UV>  {
-            0.568320 0.000146 
-          }
         }
         <Vertex> 20 {-1.074324 -1.301878 4.135640
-          <UV>  {
-            0.786340 0.366438 
-          }
         }
         <Vertex> 21 {1.074324 -1.301878 4.135640
-          <UV>  {
-            0.790356 0.000146 
-          }
         }
         <Vertex> 22 {1.074324 0.000000 4.135640
-          <UV>  {
-            0.980251 0.000146 
-          }
         }
         <Vertex> 23 {-1.074324 0.000000 4.135640
-          <UV>  {
-            0.980251 0.368101 
-          }
         }}
       
       
