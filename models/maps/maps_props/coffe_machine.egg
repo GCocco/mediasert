@@ -1291,6 +1291,17 @@
       <Normal> {-0.000001 0.000000 1.000000}
       <VertexRef> { 176 177 178 179 180 <Ref> { coffe_machine }} 
     }
+    <Group> cup_placeholder {
+      <Transform> {
+        <Matrix4> {
+          1.0 0.0 0.0 0.0 
+          0.0 1.0 0.0 0.0 
+          0.0 0.0 1.0 0.0 
+          -0.365694522857666 -0.9670006036758423 1.708892583847046 1.0 
+        }
+      }
+      
+    }
     <Group> machine_interact {
       <Collide> { Polyset Descend }
       <Tag> mask { interactable }
