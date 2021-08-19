@@ -12,13 +12,32 @@ SIN45 = 0.7071
 
 
 class _InteractHandler(DirectObject):
-    def __init__(self):
+    def __init__(self, raynode, renderNP):
         self._interrupt = False
         self._last_collided = None
+        self._trav = CollisionTraverser()
+        self._queue = CollisionHandlerQueue()
+        self._trav.addCollider(raynode, self._queue)
+        self._renderNP = renderNP
+
+    
+    def interactTask(self, task):
+        self._trav.traverse(self._renderNP)
+        if self._queue.getNumEntries():
+            self._queue.sortEntries()
+            self(self._queue.getEntry(0).getIntoNode())
+            return task.again
+        self(None)
+        return task.again
+
 
     def onHover(self):
         if self._last_collided is not None:
-            GUI_FSM(EVENT_MAP[self._last_collided.getTag("interactable_id")])
+            try:
+                GUI_FSM(EVENT_MAP[self._last_collided.getTag("interactable_id")])
+            except KeyError:
+                pass
+            return
 
     def onClick(self):
         if self._last_collided is not None:
@@ -106,12 +125,9 @@ class FPController(DirectObject, NodePath):
         _ray_node.setIntoCollideMask(BitMasks.Empty)
         _ray_np.show()
         _ray_node.addSolid(CollisionLine((.0, .0, .0), (.0, -.4,.0)))
-        self._queue = CollisionHandlerQueue()
-        self._interact_trav = CollisionTraverser()
-        self._interact_trav.addCollider(_ray_np, self._queue)
-        self.doMethodLater(.02, self._interactTask, "interact-task")
-
-        self._interact_handler = _InteractHandler()
+        
+        self._interact_handler = _InteractHandler(_ray_np, self._renderNP)
+        self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
 
         #debug
         self.accept("l", self.ls)
@@ -131,7 +147,7 @@ class FPController(DirectObject, NodePath):
     def setMovement(self, val):
         if val and not self._moveswitch:
             self.doMethodLater(.01, self._controllerTask, "movement-task")
-            self.doMethodLater(.02, self._interactTask, "interact-task")
+            self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
             self._moveswitch = True
         elif not val and self._moveswitch:
             self.removeAllTasks()
@@ -178,16 +194,6 @@ class FPController(DirectObject, NodePath):
         self._trav.traverse(self._renderNP)
             
         return task.again
-
-    def _interactTask(self, task):
-        self._interact_trav.traverse(self._renderNP)
-        if self._queue.getNumEntries():
-            self._queue.sortEntries()
-            self._interact_handler(self._queue.getEntry(0).getIntoNode())
-            return task.again
-        self._interact_handler(None)
-        return task.again
-
     
 
 

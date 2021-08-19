@@ -1,19 +1,5 @@
 <CoordinateSystem> { Z-up } 
-<Material> placeholder {
-  <Scalar> diffr { 0.640000 }
-  <Scalar> diffg { 0.640000 }
-  <Scalar> diffb { 0.640000 }
-  <Scalar> specr { 0.500000 }
-  <Scalar> specg { 0.500000 }
-  <Scalar> specb { 0.500000 }
-  <Scalar> shininess { 12.5 }
-  <Scalar> ambr { 1.000000 }
-  <Scalar> ambg { 1.000000 }
-  <Scalar> ambb { 1.000000 }
-  <Scalar> emitr { 0.000000 }
-  <Scalar> emitg { 0.000000 }
-  <Scalar> emitb { 0.000000 }
-}
+<Material> placeholder {}
 
 <Material> map_01 {
 }
@@ -2146,6 +2132,309 @@
       <Normal> {0.000000 0.000000 -1.000000}
       <BFace> { 1 }
       <VertexRef> { 308 309 310 311 <Ref> { lvl_01 }} 
+    }
+    <Group> placeholder.003 {
+      <Tag> prefab { CoffeMachine }
+      <Tag> interactable_id { closed_door }
+      <Transform> {
+        <Matrix4> {
+          1.0 0.0 0.0 0.0 
+          0.0 1.0 0.0 0.0 
+          0.0 0.0 1.0 0.0 
+          0.0 2.18170166015625 0.0 1.0 
+        }
+      }
+      
+      <VertexPool> placeholder.003 {
+      
+        <Vertex> 0 {-0.045187 2.136515 -0.045187
+        }
+        <Vertex> 1 {-0.045187 2.136515 0.045187
+        }
+        <Vertex> 2 {-0.045187 2.226888 0.045187
+        }
+        <Vertex> 3 {-0.045187 2.226888 -0.045187
+        }
+        <Vertex> 4 {-0.045187 2.226888 0.045187
+        }
+        <Vertex> 5 {0.045187 2.226888 0.045187
+        }
+        <Vertex> 6 {0.045187 2.726888 0.045187
+        }
+        <Vertex> 7 {-0.045187 2.726888 0.045187
+        }
+        <Vertex> 8 {0.045187 2.226888 0.045187
+        }
+        <Vertex> 9 {0.045187 2.136515 0.045187
+        }
+        <Vertex> 10 {0.545187 2.136515 0.045187
+        }
+        <Vertex> 11 {0.545187 2.226888 0.045187
+        }
+        <Vertex> 12 {0.016203 2.136515 -0.016203
+        }
+        <Vertex> 13 {0.016203 2.136515 0.016203
+        }
+        <Vertex> 14 {-0.016203 2.136515 0.016203
+        }
+        <Vertex> 15 {-0.016203 2.136515 -0.016203
+        }
+        <Vertex> 16 {-0.045187 2.226888 -0.045187
+        }
+        <Vertex> 17 {0.045187 2.226888 -0.045187
+        }
+        <Vertex> 18 {0.045187 2.136515 -0.045187
+        }
+        <Vertex> 19 {-0.045187 2.136515 -0.045187
+        }
+        <Vertex> 20 {0.045187 2.136515 0.045187
+        }
+        <Vertex> 21 {0.045187 2.226888 0.045187
+        }
+        <Vertex> 22 {0.045187 2.226888 0.545187
+        }
+        <Vertex> 23 {0.045187 2.136515 0.545187
+        }
+        <Vertex> 24 {0.045187 2.226888 0.545187
+        }
+        <Vertex> 25 {-0.045187 2.226888 0.545187
+        }
+        <Vertex> 26 {-0.045187 2.136515 0.545187
+        }
+        <Vertex> 27 {0.045187 2.136515 0.545187
+        }
+        <Vertex> 28 {-0.045187 2.226888 0.045187
+        }
+        <Vertex> 29 {-0.045187 2.136515 0.045187
+        }
+        <Vertex> 30 {-0.045187 2.136515 0.545187
+        }
+        <Vertex> 31 {-0.045187 2.226888 0.545187
+        }
+        <Vertex> 32 {-0.045187 2.136515 0.045187
+        }
+        <Vertex> 33 {0.045187 2.136515 0.045187
+        }
+        <Vertex> 34 {0.045187 2.136515 0.545187
+        }
+        <Vertex> 35 {-0.045187 2.136515 0.545187
+        }
+        <Vertex> 36 {0.045187 2.226888 0.045187
+        }
+        <Vertex> 37 {-0.045187 2.226888 0.045187
+        }
+        <Vertex> 38 {-0.045187 2.226888 0.545187
+        }
+        <Vertex> 39 {0.045187 2.226888 0.545187
+        }
+        <Vertex> 40 {0.545187 2.226888 -0.045187
+        }
+        <Vertex> 41 {0.545187 2.226888 0.045187
+        }
+        <Vertex> 42 {0.545187 2.136515 0.045187
+        }
+        <Vertex> 43 {0.545187 2.136515 -0.045187
+        }
+        <Vertex> 44 {0.045187 2.226888 -0.045187
+        }
+        <Vertex> 45 {0.045187 2.226888 0.045187
+        }
+        <Vertex> 46 {0.545187 2.226888 0.045187
+        }
+        <Vertex> 47 {0.545187 2.226888 -0.045187
+        }
+        <Vertex> 48 {0.045187 2.136515 0.045187
+        }
+        <Vertex> 49 {0.045187 2.136515 -0.045187
+        }
+        <Vertex> 50 {0.545187 2.136515 -0.045187
+        }
+        <Vertex> 51 {0.545187 2.136515 0.045187
+        }
+        <Vertex> 52 {0.045187 2.136515 -0.045187
+        }
+        <Vertex> 53 {0.045187 2.226888 -0.045187
+        }
+        <Vertex> 54 {0.545187 2.226888 -0.045187
+        }
+        <Vertex> 55 {0.545187 2.136515 -0.045187
+        }
+        <Vertex> 56 {-0.045187 2.726888 -0.045187
+        }
+        <Vertex> 57 {-0.045187 2.726888 0.045187
+        }
+        <Vertex> 58 {0.045187 2.726888 0.045187
+        }
+        <Vertex> 59 {0.045187 2.726888 -0.045187
+        }
+        <Vertex> 60 {-0.045187 2.226888 -0.045187
+        }
+        <Vertex> 61 {-0.045187 2.226888 0.045187
+        }
+        <Vertex> 62 {-0.045187 2.726888 0.045187
+        }
+        <Vertex> 63 {-0.045187 2.726888 -0.045187
+        }
+        <Vertex> 64 {0.045187 2.226888 0.045187
+        }
+        <Vertex> 65 {0.045187 2.226888 -0.045187
+        }
+        <Vertex> 66 {0.045187 2.726888 -0.045187
+        }
+        <Vertex> 67 {0.045187 2.726888 0.045187
+        }
+        <Vertex> 68 {0.045187 2.226888 -0.045187
+        }
+        <Vertex> 69 {-0.045187 2.226888 -0.045187
+        }
+        <Vertex> 70 {-0.045187 2.726888 -0.045187
+        }
+        <Vertex> 71 {0.045187 2.726888 -0.045187
+        }
+        <Vertex> 72 {-0.016203 2.136515 -0.016203
+        }
+        <Vertex> 73 {-0.016203 2.136515 0.016203
+        }
+        <Vertex> 74 {-0.045187 2.136515 0.045187
+        }
+        <Vertex> 75 {-0.045187 2.136515 -0.045187
+        }
+        <Vertex> 76 {0.016203 2.136515 0.016203
+        }
+        <Vertex> 77 {0.016203 2.136515 -0.016203
+        }
+        <Vertex> 78 {0.045187 2.136515 -0.045187
+        }
+        <Vertex> 79 {0.045187 2.136515 0.045187
+        }
+        <Vertex> 80 {0.016203 2.136515 -0.016203
+        }
+        <Vertex> 81 {-0.016203 2.136515 -0.016203
+        }
+        <Vertex> 82 {-0.045187 2.136515 -0.045187
+        }
+        <Vertex> 83 {0.045187 2.136515 -0.045187
+        }
+        <Vertex> 84 {-0.016203 2.136515 0.016203
+        }
+        <Vertex> 85 {0.016203 2.136515 0.016203
+        }
+        <Vertex> 86 {0.045187 2.136515 0.045187
+        }
+        <Vertex> 87 {-0.045187 2.136515 0.045187
+        }}
+      
+      
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {-1.000000 0.000000 0.000000}
+        <VertexRef> { 0 1 2 3 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 0.000000 1.000000}
+        <VertexRef> { 4 5 6 7 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 0.000000 1.000000}
+        <VertexRef> { 8 9 10 11 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 12 13 14 15 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 0.000000 -1.000000}
+        <VertexRef> { 16 17 18 19 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {1.000000 0.000000 0.000000}
+        <VertexRef> { 20 21 22 23 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 0.000000 1.000000}
+        <VertexRef> { 24 25 26 27 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {-1.000000 0.000000 0.000000}
+        <VertexRef> { 28 29 30 31 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 32 33 34 35 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 1.000000 0.000000}
+        <VertexRef> { 36 37 38 39 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {1.000000 0.000000 0.000000}
+        <VertexRef> { 40 41 42 43 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 1.000000 0.000000}
+        <VertexRef> { 44 45 46 47 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 48 49 50 51 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 0.000000 -1.000000}
+        <VertexRef> { 52 53 54 55 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 1.000000 0.000000}
+        <VertexRef> { 56 57 58 59 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {-1.000000 0.000000 0.000000}
+        <VertexRef> { 60 61 62 63 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {1.000000 0.000000 0.000000}
+        <VertexRef> { 64 65 66 67 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 0.000000 -1.000000}
+        <VertexRef> { 68 69 70 71 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 72 73 74 75 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 76 77 78 79 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 80 81 82 83 <Ref> { placeholder.003 }} 
+      }
+      <Polygon> {
+        <MRef> { placeholder }
+        <Normal> {0.000000 -1.000000 0.000000}
+        <VertexRef> { 84 85 86 87 <Ref> { placeholder.003 }} 
+      }
     }
     <Group> placeholder.002 {
       <Tag> prefab { Door_01 }

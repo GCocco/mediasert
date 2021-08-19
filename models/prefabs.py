@@ -12,6 +12,16 @@ class Prefab(NodePath):
     def copyTransform(self, other_node):
         self.setPosHprScale(other_node.getPos(), other_node.getHpr(), other_node.getScale())
         return
+    
+    def set_masks(self):
+        
+        for interactable in self.findAllMatches("**/=mask=interactable"):
+            interactable.node().setIntoCollideMask(BitMasks.Interactable)
+        for solid in self.findAllMatches("**/=mask=solid"):
+            solid.node().setIntoCollideMask(BitMasks.Solid)
+        for collider in self.findAllMatches("**/+CollisionNode"):
+            collider.node().setFromCollideMask(BitMasks.Empty)
+        return
 
 
 class Door_01(Prefab):
@@ -20,8 +30,15 @@ class Door_01(Prefab):
         if placeholder:
             self.copyTransform(placeholder)
             self.find("**/+CollisionNode").setTag("interactable_id", placeholder.getTag("interactable_id"))
-        self.find("**/+CollisionNode").node().setIntoCollideMask(BitMasks.Interactable)
-        self.find("**/+CollisionNode").node().setFromCollideMask(BitMasks.Empty)
+        self.set_masks()
+        return
+
+class CoffeMachine(Prefab):
+    def __init__(self, placeholder=None):
+        super().__init__("./models/maps/maps_props/coffe_machine.egg")
+        if placeholder:
+            self.copyTransform(placeholder)
+        self.set_masks()
         
-        
-PREFAB_MAP = {"Door_01": Door_01}
+PREFAB_MAP = {"Door_01": Door_01,
+              "CoffeMachine": CoffeMachine}
