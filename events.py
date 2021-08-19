@@ -1,5 +1,5 @@
 # events and interactions utils
-
+from config import GUI_FSM
 
 
 class Event:
@@ -44,6 +44,32 @@ class NoticeText(Event):
         return "Notice"
 
 
-EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("Questa porta è chiusa")),
-             "kaffe": NoticeText("Compra Kafffffèèèèèèèèèèèèèè")}
+class ActionEvent(Event):
+    def __init__(self, *args):
+        self._actions = args
+
+    @property
+    def type(self):
+        return "Action"
+
+    @property
+    def actions(self):
+        return self._actions
+
+    def __call__(self):
+        for action in self._actions:
+            action()
         
+
+class EventMap:
+    _EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("La porta è chiusa"))}
+    @staticmethod
+    def update(event_id, event):
+        EventMap._EVENT_MAP[event_id] = event
+
+    @staticmethod
+    def startEvent(event_id):
+        GUI_FSM(EventMap._EVENT_MAP[event_id]) 
+
+    def clickEvent(event_id):
+        GUI_FSM(EventMap._EVENT_MAP[event_id].onClick)

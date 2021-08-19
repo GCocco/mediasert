@@ -65,4 +65,9 @@ class _GUI_FSM(FSM):
     def exitEmpty(self):
         pass
 
+    def enterAction(self, event):
+        event()
+
+    def exitAction(self):
+        return
 GUI_FSM = _GUI_FSM()

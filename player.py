@@ -6,8 +6,9 @@ from utils import Direction, BitMasks
 from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher
 from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
 from panda3d.core import Thread
-from events import EVENT_MAP
+from events import EventMap
 from config import GUI_FSM
+
 SIN45 = 0.7071
 
 
@@ -34,14 +35,14 @@ class _InteractHandler(DirectObject):
     def onHover(self):
         if self._last_collided is not None:
             try:
-                GUI_FSM(EVENT_MAP[self._last_collided.getTag("interactable_id")])
+                EventMap.startEvent(self._last_collided.getTag("interactable_id"))
             except KeyError:
                 pass
             return
 
     def onClick(self):
         if self._last_collided is not None:
-            GUI_FSM(EVENT_MAP[self._last_collided.getTag("interactable_id")].onClick)
+            EventMap.clickEvent(self._last_collided.getTag("interactable_id"))
     
     def onHoverLeave(self):
         if self._last_collided:

@@ -3,6 +3,7 @@
 from panda3d.core import NodePath
 from config import Loader
 from utils import BitMasks
+import events
 
 class Prefab(NodePath):
     def __init__(self, model_path):
@@ -39,11 +40,15 @@ class CoffeMachine(Prefab):
         if placeholder:
             self.copyTransform(placeholder)
         self.set_masks()
+        events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
+                               events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self.dispense_coffe)))
+
 
     def dispense_coffe(self):
         coffe = Coffe(self.find("**/cup_placeholder"))
         coffe.reparentTo(self)
 
+        
 class Coffe(Prefab):
     def __init__(self, placeholder=None):
         super().__init__("./models/props/coffe_cup.egg")
