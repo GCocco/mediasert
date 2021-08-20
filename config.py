@@ -1,22 +1,19 @@
+
 def init_config(base):
     _Globals.base = base
-    Loader._LOADER = base.loader
+    _Globals.loader = base.loader
     GUI.init()
 
-def init_player(player):
-    _Globals.playercontroller = player
+def init_player(controller):
+    _Globals.player = controller
     
 class _Globals:
     base = None
-    playercontroller = None
+    player = None
+    loader = None
 
-class Loader:
-    _LOADER = None
-    
-    @staticmethod
-    def loadModel(path):
-        return Loader._LOADER.loadModel(path)
-
+def get_globals():
+    return _Globals
 
 import gui
 

@@ -25,8 +25,8 @@ if __name__ == "__main__":
     config.init_player(me)
 
     #debug
-    light = me.attachNewNode(DirectionalLight("light"))
-    ms.render.setLight(light)
+#    light = me.attachNewNode(DirectionalLight("light"))
+#    ms.render.setLight(light)
     
     map = Map_01(ms)
     ms.run()

@@ -20,8 +20,8 @@ class _InteractHandler(DirectObject):
         self._queue = CollisionHandlerQueue()
         self._trav.addCollider(raynode, self._queue)
         self._renderNP = renderNP
+        pass
 
-    
     def interactTask(self, task):
         self._trav.traverse(self._renderNP)
         if self._queue.getNumEntries():
@@ -31,7 +31,6 @@ class _InteractHandler(DirectObject):
         self(None)
         return task.again
 
-
     def onHover(self):
         if self._last_collided is not None:
             try:
@@ -39,14 +38,18 @@ class _InteractHandler(DirectObject):
             except KeyError:
                 pass
             return
+        return
 
     def onClick(self):
         if self._last_collided is not None:
             EventMap.clickEvent(self._last_collided.getTag("interactable_id"))
-    
+            return
+        return
+
     def onHoverLeave(self):
         if self._last_collided:
             GUI_FSM.close()
+            return
         return
 
     def __call__(self, new):
@@ -55,7 +58,9 @@ class _InteractHandler(DirectObject):
             self._last_collided = new
             if new is not None:
                 self.onHover()
-            
+            return
+        return
+    pass
 
 
 class FPController(DirectObject, NodePath):
@@ -68,9 +73,8 @@ class FPController(DirectObject, NodePath):
         Direction.ForwardLeft: (-SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, 0),
         Direction.BackRight: (SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, 0),
         Direction.BackLeft: (-SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, 0)}
-    
-    def __init__(self, base):
 
+    def __init__(self, base):
         NodePath.__init__(self, "player")
         self._mouseWatcher = base.mouseWatcherNode
         self._win = base.win
@@ -106,6 +110,9 @@ class FPController(DirectObject, NodePath):
 
         self.doMethodLater(.01, self._controllerTask, "move-task")
 
+        self.holder = self.camera.attachNewNode("holder")
+        self.holder.setPos(.0, .5, .0)
+
         # collision management
 
         self._trav = CollisionTraverser()
@@ -136,27 +143,39 @@ class FPController(DirectObject, NodePath):
         self.accept("o", base.render.ls)
 
         self.DEBUG_TASKFLAG = False
-        
+
         def dbg_cam():
             base.oobe()
             self.DEBUG_TASKFLAG = not self.DEBUG_TASKFLAG
+            pass
 
         self.accept("k", dbg_cam)
         self._moveswitch = True
         self.accept("mouse1", self._interact_handler.onClick)
+        pass
+
+    def hold(self, holded_np):
+        holded_np.reparentTo(self.holder)
+        holded_np.setPos(.0, .9, .0)
+        holded_np.setScale(.3)
+        holded_np.hold()
+        return
 
     def setMovement(self, val):
         if val and not self._moveswitch:
             self.doMethodLater(.01, self._controllerTask, "movement-task")
             self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
             self._moveswitch = True
+            pass
         elif not val and self._moveswitch:
             self.removeAllTasks()
             self._moveswitch = False
+            pass
         return
         
     def _changeValue(self, key, val):
         self._inputs[key] = val
+        return
 
     def _getDirection(self):
         dire = 0
@@ -175,8 +194,9 @@ class FPController(DirectObject, NodePath):
 
     def _controllerTask(self, task):
         dire = self._getDirection()
-        if dire is not  Direction.Undefined:
+        if dire is not Direction.Undefined:
             self.setPos(self, self._angleMap[dire])
+            pass
         if self._mouseWatcher.hasMouse():
             if self.DEBUG_TASKFLAG:
                 return task.again
@@ -185,16 +205,17 @@ class FPController(DirectObject, NodePath):
             self.camera.setP(self.camera, y *ControllerSettings.RotationSpeed)
             if self.camera.getP() > ControllerSettings.MaxP:
                 self.camera.setP(ControllerSettings.MaxP)
+                pass
             elif self.camera.getP() < ControllerSettings.MinP:
-                self.camera.setP(ControllerSettings.MinP)            
+                self.camera.setP(ControllerSettings.MinP)
+                pass
             props = self._win.getProperties()
-             
             self._win.movePointer(0,
                          props.getXSize() // 2,
                          props.getYSize() // 2)
         self._trav.traverse(self._renderNP)
-            
         return task.again
+    pass
     
 
 
