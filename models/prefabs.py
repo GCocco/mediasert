@@ -58,6 +58,10 @@ class Holdable(Prefab, DirectObject):
         self.removeTask("rotate")
         return
 
+    def destroy(self, timer=0.0):
+        self.doMethodLater(timer, lambda x: self.removeNode(), "destroy")
+        return
+    
     def onlick(self): # to be overridden
         pass
     pass
@@ -98,7 +102,6 @@ class Coffe(Holdable):
         self.set_masks()
         events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
                                events.NoticeText("prendi", onClick=events.ActionEvent(lambda: Globals.player.hold(self))))
-
         pass
     pass
 

@@ -137,6 +137,7 @@ class FPController(DirectObject, NodePath):
         self._interact_handler = _InteractHandler(_ray_np, self._renderNP)
         self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
 
+        self._holded = None
         #debug
         self.accept("l", self.ls)
         self.accept("p", lambda: print(self.getPos()))
@@ -154,7 +155,17 @@ class FPController(DirectObject, NodePath):
         self.accept("mouse1", self._interact_handler.onClick)
         pass
 
+    def drop(self):
+        if self._holded:
+            self._holded.reparentTo(self._renderNP)
+            self._holded.setPos(self.getPos())
+            self._holded.unhold()
+            self._holded.destroy(timer=20)
+    
     def hold(self, holded_np):
+        if self._holded:
+            self.drop()
+        self._holded = holded_np
         holded_np.reparentTo(self.holder)
         holded_np.setPos(.0, .9, .0)
         holded_np.setScale(.3)
@@ -191,6 +202,7 @@ class FPController(DirectObject, NodePath):
             return Direction(dire)
         except ValueError:
             return Direction.Undefined
+        return Direction.Undefined
 
     def _controllerTask(self, task):
         dire = self._getDirection()
