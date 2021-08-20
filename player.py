@@ -81,7 +81,7 @@ class FPController(DirectObject, NodePath):
         self._renderNP = base.render
         self.reparentTo(base.render)
         self.camera = base.camera
-        self.camera.setZ(2.5)
+        self.camera.setZ(4)
         self.camera.setY(-.2)
         self.camera.reparentTo(self)
         # movement ontroller                                                                                                                                 
@@ -117,7 +117,7 @@ class FPController(DirectObject, NodePath):
 
         self._trav = CollisionTraverser()
         _col_node = CollisionNode("playerCollider")
-        _col_node.addSolid(CollisionSphere(0.0, 0.0, 0.0, 1.5))
+        _col_node.addSolid(CollisionSphere(0.0, 0.0, 1.5, 1.5))
         _col_node.setFromCollideMask(BitMasks.Solid) 
         _col_node.setIntoCollideMask(BitMasks.Empty)
         _col_np = self.attachNewNode(_col_node)
@@ -160,6 +160,8 @@ class FPController(DirectObject, NodePath):
             self._holded.reparentTo(self._renderNP)
             self._holded.setPos(self.getPos())
             self._holded.unhold()
+            self._holded.setScale(1.0)
+            self._holded.setHpr(.0, .0, .0)
             self._holded.destroy(timer=20)
     
     def hold(self, holded_np):

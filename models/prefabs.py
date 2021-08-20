@@ -9,8 +9,11 @@ import events
 Globals = get_globals()
 
 class Prefab(NodePath):
-    def __init__(self, model_path):
+    def __init__(self, model_path, placeholder=None):
         super().__init__(Globals.loader.loadModel(model_path))
+        if placeholder:
+            self.copyTransform(placeholder)
+            pass
         pass
 
     def copyTransform(self, other_node):
@@ -30,8 +33,8 @@ class Prefab(NodePath):
 
 
 class Holdable(Prefab, DirectObject):
-    def __init__(self, model_path):
-        super().__init__(model_path)
+    def __init__(self, model_path, placeholder=None):
+        super().__init__(model_path, placeholder=placeholder)
         pass
 
     def _rotateTask(self, task):
@@ -69,9 +72,8 @@ class Holdable(Prefab, DirectObject):
 
 class Door_01(Prefab):
     def __init__(self, placeholder=None):
-        super().__init__("./models/maps/maps_props/door_01.egg")
+        super().__init__("./models/maps/maps_props/door_01.egg", placeholder=placeholder)
         if placeholder:
-            self.copyTransform(placeholder)
             self.find("**/+CollisionNode").setTag("interactable_id", placeholder.getTag("interactable_id"))
         self.set_masks()
         return
@@ -96,9 +98,7 @@ class CoffeMachine(Prefab):
 
 class Coffe(Holdable):
     def __init__(self, placeholder=None):
-        super().__init__("./models/props/coffe_cup.egg")
-        if placeholder:
-            self.copyTransform(placeholder)
+        super().__init__("./models/props/coffe_cup.egg", placeholder=placeholder)
         self.set_masks()
         events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
                                events.NoticeText("prendi", onClick=events.ActionEvent(lambda: Globals.player.hold(self))))
@@ -106,5 +106,12 @@ class Coffe(Holdable):
     pass
 
 
+class Lamp_01(Prefab):
+    def __init__(self, placeholder=None):
+        super().__init__("./models/maps/maps_props/lamp_01.egg", placeholder=placeholder)
+        
+
+
 PREFAB_MAP = {"Door_01": Door_01,
-              "CoffeMachine": CoffeMachine}
+              "CoffeMachine": CoffeMachine,
+              "Lamp_01": Lamp_01}
