@@ -35,7 +35,9 @@ class Holdable(Prefab, DirectObject):
         pass
 
     def _rotateTask(self, task):
+        self.setP(Globals.base.render, .0)
         self.setH(self, .1)
+        self.setR(Globals.base.render, .0)
         return task.again
 
     def hold(self):
