@@ -43,9 +43,9 @@ class _InteractHandler(DirectObject):
     def onClick(self):
         if self._last_collided is not None:
             EventMap.clickEvent(self._last_collided.getTag("interactable_id"))
-            return
-        return
-
+            return True
+        return False
+    
     def onHoverLeave(self):
         if self._last_collided:
             GUI_FSM.close()
@@ -152,26 +152,27 @@ class FPController(DirectObject, NodePath):
 
         self.accept("k", dbg_cam)
         self._moveswitch = True
-        self.accept("mouse1", self._interact_handler.onClick)
+        self.accept("mouse1", self._on_click)
+        self.accept("mouse3", self._on_click_2)
         pass
 
-    def drop(self):
+
+    def _on_click(self):
+        if self._interact_handler.onClick():
+            return
         if self._holded:
-            self._holded.reparentTo(self._renderNP)
-            self._holded.setPos(self.getPos())
-            self._holded.unhold()
-            self._holded.setScale(1.0)
-            self._holded.setHpr(.0, .0, .0)
-            self._holded.destroy(timer=20)
-    
-    def hold(self, holded_np):
+            self._holded.onClick()
+            return
+        return
+
+    def _on_click_2(self):
+        self.drop()
+        return
+            
+    def setHolded(self, holded_np):
         if self._holded:
-            self.drop()
+            self._holded.drop()
         self._holded = holded_np
-        holded_np.reparentTo(self.holder)
-        holded_np.setPos(.0, .9, .0)
-        holded_np.setScale(.3)
-        holded_np.hold()
         return
 
     def setMovement(self, val):

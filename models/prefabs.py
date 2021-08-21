@@ -33,6 +33,7 @@ class Prefab(NodePath):
 
 
 class Holdable(Prefab, DirectObject):
+    _timer = 20
     def __init__(self, model_path, placeholder=None):
         super().__init__(model_path, placeholder=placeholder)
         pass
@@ -44,6 +45,10 @@ class Holdable(Prefab, DirectObject):
         return task.again
 
     def hold(self):
+        Globals.player.setHolded(self)
+        self.reparentTo(Globals.player)
+        self.setPos(Globals.player, .4, .9, -.3)
+        self.setScale(.3)
         try:
             self.find("**/=mask=interactable").node().setIntoCollideMask(BitMasks.Empty)
             pass
@@ -52,21 +57,26 @@ class Holdable(Prefab, DirectObject):
         self.doMethodLater(.01, self._rotateTask, "rotate")
         return
 
-    def unhold(self):
+    def drop(self):
+        self.reparentTo(Globals.render)
+        self.setPos(Globals.player.getPos())
+        self.setScale(1)
+        self.setP(0)
+        self.setR(0)
         try:
             self.find("**/=mask=interactable").node().setIntoCollideMask(BitMasks.Interactable)
             pass
         except AssertionError:
             pass
         self.removeTask("rotate")
-        return
-
-    def destroy(self, timer=0.0):
-        self.doMethodLater(timer, lambda x: self.removeNode(), "destroy")
+        self.doMethodLater(self._timer, lambda x: self.removeNode(), "destroy")
         return
     
-    def onlick(self): # to be overridden
+    def onClick(self, collided): # to be overridden, changes based on prefab
         pass
+
+    def throw(self): # launches the model (straight line? mopath?)
+        pass # todo: implement
     pass
 
 
@@ -101,7 +111,7 @@ class Coffe(Holdable):
         super().__init__("./models/props/coffe_cup.egg", placeholder=placeholder)
         self.set_masks()
         events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
-                               events.NoticeText("prendi", onClick=events.ActionEvent(lambda: Globals.player.hold(self))))
+                               events.NoticeText("prendi", onClick=events.ActionEvent(self.hold)))
         pass
     pass
 
