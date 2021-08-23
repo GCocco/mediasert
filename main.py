@@ -4,6 +4,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import DirectionalLight
 
 import config
+import gui
 
 from player import FPController
 from maps import Map_01
@@ -22,8 +23,6 @@ class Mediasert(ShowBase):
 if __name__ == "__main__":
     ms = Mediasert()
     me = FPController(ms)
-
-    #debug
     light = ms.camera.attachNewNode(DirectionalLight("light"))
     ms.render.setLight(light)
     

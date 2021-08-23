@@ -7,7 +7,9 @@ from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, Col
 from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
 from panda3d.core import Thread
 from events import EventMap
-from config import GUI_FSM, init_player
+from config import get_globals, init_player
+
+_Globals = get_globals()
 
 SIN45 = 0.7071
 
@@ -52,7 +54,7 @@ class _InteractHandler(DirectObject):
     
     def onHoverLeave(self):
         if self._last_collided:
-            GUI_FSM.close()
+            _Globals.gui_fsm.close() # anbdrebbe cambiato, accesso diretto alla gui (meglio passare per events)
             return
         return
 

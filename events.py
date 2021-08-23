@@ -1,5 +1,7 @@
 # events and interactions utils
-from config import GUI_FSM
+from config import get_globals
+
+_Globals = get_globals()
 
 
 class Event:
@@ -70,11 +72,11 @@ class EventMap:
 
     @staticmethod
     def remove(event_id):
-        return EventMap._EVENT_MAP.pop(event_id)
+        EventMap._EVENT_MAP.pop(event_id)
 
     @staticmethod
     def startEvent(event_id):
-        GUI_FSM(EventMap._EVENT_MAP[event_id]) 
+        _Globals.gui_fsm(EventMap._EVENT_MAP[event_id]) 
 
     def clickEvent(event_id):
-        GUI_FSM(EventMap._EVENT_MAP[event_id].onClick)
+        _Globals.gui_fsm(EventMap._EVENT_MAP[event_id].onClick)

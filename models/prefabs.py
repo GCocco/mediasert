@@ -137,7 +137,7 @@ class CoffeMachine(Prefab):
         self.set_masks()
         events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
                                events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self.dispense_coffe)))
-
+        
     def dispense_coffe(self):
         coffe = Coffe(self.find("**/cup_placeholder"))
         coffe.reparentTo(self)
