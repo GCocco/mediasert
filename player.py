@@ -22,6 +22,10 @@ class _InteractHandler(DirectObject):
         self._renderNP = renderNP
         pass
 
+    @property
+    def collidingNP(self):
+        return self._last_collided
+
     def interactTask(self, task):
         self._trav.traverse(self._renderNP)
         if self._queue.getNumEntries():
@@ -110,8 +114,7 @@ class FPController(DirectObject, NodePath):
 
         self.doMethodLater(.01, self._controllerTask, "move-task")
 
-        self.holder = self.camera.attachNewNode("holder")
-        self.holder.setPos(.0, .5, .0)
+        self._holderNP = self.camera.attachNewNode("holder")
 
         # collision management
 
@@ -152,21 +155,26 @@ class FPController(DirectObject, NodePath):
 
         self.accept("k", dbg_cam)
         self._moveswitch = True
-        self.accept("mouse1", self._on_click)
-        self.accept("mouse3", self._on_click_2)
+        self.accept("mouse1", self._on_click_1)
+        self.accept("mouse3", self._on_click_3)
         pass
 
 
-    def _on_click(self):
+    def _on_click_1(self):
         if self._interact_handler.onClick():
             return
         if self._holded:
-            self._holded.onClick()
+            self._holded.onClick(self._interact_handler.collidingNP)
             return
         return
 
-    def _on_click_2(self):
-        self.drop()
+    def _on_click_3(self):
+        try:
+            self._holded.drop()
+            self._holded = None
+            return
+        except AttributeError:
+            return
         return
             
     def setHolded(self, holded_np):
@@ -174,6 +182,10 @@ class FPController(DirectObject, NodePath):
             self._holded.drop()
         self._holded = holded_np
         return
+
+    @property
+    def holder(self):
+        return self._holderNP
 
     def setMovement(self, val):
         if val and not self._moveswitch:

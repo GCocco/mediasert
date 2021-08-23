@@ -2,6 +2,7 @@
 def init_config(base):
     _Globals.base = base
     _Globals.loader = base.loader
+    _Globals.render = base.render
     GUI.init()
 
 def init_player(controller):
@@ -11,6 +12,7 @@ class _Globals:
     base = None
     player = None
     loader = None
+    render = None
 
 def get_globals():
     return _Globals

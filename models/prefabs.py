@@ -46,23 +46,24 @@ class Holdable(Prefab, DirectObject):
 
     def hold(self):
         Globals.player.setHolded(self)
-        self.reparentTo(Globals.player)
-        self.setPos(Globals.player, .4, .9, -.3)
+        self.reparentTo(Globals.player.holder)
         self.setScale(.3)
+        self.setPos(.4, 1.9, -.3)
         try:
             self.find("**/=mask=interactable").node().setIntoCollideMask(BitMasks.Empty)
             pass
         except AssertionError:
             pass
         self.doMethodLater(.01, self._rotateTask, "rotate")
+        self.removeTask("destroy")
         return
 
     def drop(self):
         self.reparentTo(Globals.render)
         self.setPos(Globals.player.getPos())
-        self.setScale(1)
         self.setP(0)
         self.setR(0)
+        self.setScale(1)
         try:
             self.find("**/=mask=interactable").node().setIntoCollideMask(BitMasks.Interactable)
             pass
