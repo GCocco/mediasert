@@ -1,5 +1,7 @@
 # events and interactions utils
 from config import get_globals
+# shouldn't import other modules
+
 
 _Globals = get_globals()
 
@@ -61,7 +63,10 @@ class ActionEvent(Event):
     def __call__(self):
         for action in self._actions:
             action()
-        
+            return
+        pass
+    pass
+
 
 class EventMap:
     _EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("La porta è chiusa"))}

@@ -160,10 +160,22 @@ class FPController(DirectObject, NodePath):
         self._moveswitch = True
         self.accept("mouse1", self._on_click_1)
         self.accept("mouse3", self._on_click_3)
+
+
+
+        # mopath
+        from direct.directutil import Mopath
+        from direct.interval.MopathInterval import MopathInterval
+        
+        mopa = Mopath.Mopath()
+        mopa.loadFile("./models/atkpath.egg")
+        
+        self._atk_interval = MopathInterval(mopa, self.holder, name="atk") 
         pass
 
 
     def _on_click_1(self):
+        self._atk_interval.start()
         if self._interact_handler.onClick():
             return
         if self._holded:
@@ -185,6 +197,10 @@ class FPController(DirectObject, NodePath):
             self._holded.drop()
         self._holded = holded_np
         return
+
+    @property
+    def holded(self):
+        return self._holded
 
     @property
     def holder(self):
