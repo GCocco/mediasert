@@ -169,7 +169,7 @@ class FPController(DirectObject, NodePath):
         if self._interact_handler.onClick():
             return
         if self._holded:
-            self._holded.onClick(self._interact_handler.collidingNP) # for future interaction between holded and facing (not implemented)
+            self._holded.onClick()
             return
         return
 

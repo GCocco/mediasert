@@ -125,7 +125,7 @@ class Holdable(Prefab, DirectObject):
         self.doMethodLater(self._timer, lambda x: self.removeNode(), "destroy")
         return
     
-    def onClick(self, collided): # allows check on faced interactable
+    def onClick(self):
         interval = MopathInterval(self.anim, _Globals.player.holder, name="atkaction")
         interval.start()
         pass
