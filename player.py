@@ -161,25 +161,15 @@ class FPController(DirectObject, NodePath):
         self.accept("mouse1", self._on_click_1)
         self.accept("mouse3", self._on_click_3)
 
-
-
-        # mopath
-        from direct.directutil import Mopath
-        from direct.interval.MopathInterval import MopathInterval
         
-        mopa = Mopath.Mopath()
-        mopa.loadFile("./models/atkpath.egg")
-        
-        self._atk_interval = MopathInterval(mopa, self.holder, name="atk") 
         pass
 
 
     def _on_click_1(self):
-        self._atk_interval.start()
         if self._interact_handler.onClick():
             return
         if self._holded:
-            self._holded.onClick(self._interact_handler.collidingNP)
+            self._holded.onClick(self._interact_handler.collidingNP) # for future interaction between holded and facing (not implemented)
             return
         return
 

@@ -5,12 +5,14 @@ from panda3d.core import NodePath
 from config import get_globals
 from utils import BitMasks
 import events
+from direct.directutil.Mopath import Mopath
+from direct.interval.MopathInterval import MopathInterval
 
-Globals = get_globals()
+_Globals = get_globals()
 
 class Prefab(NodePath):
     def __init__(self, model_path, placeholder=None):
-        super().__init__(Globals.loader.loadModel(model_path))
+        super().__init__(_Globals.loader.loadModel(model_path))
         if placeholder:
             self.copyTransform(placeholder)
             pass
@@ -36,11 +38,23 @@ class Holdable(Prefab, DirectObject):
     _IDs = []
     _lowest_id = 1
     _timer = 20
-    
+
+    anim = Mopath()
+    _anim_path = "./models/atkpath.egg"
+    _anim_is_loaded = False
+
+    @staticmethod
+    def _load_mopath():
+        Holdable.anim.loadFile(Holdable._anim_path)
+        Holdable._anim_is_loaded = True
+        return
     
     def __init__(self, model_path, placeholder=None, unholded_event=None):
         super().__init__(model_path, placeholder=placeholder)
         self._instance_id = 0
+        if not self._anim_is_loaded:
+            self._load_mopath()
+            pass
         self._generate_id()
         self.find("**/+CollisionNode").setTag("interactable_id", str(self._instance_id))
         self._set_event()
@@ -77,14 +91,14 @@ class Holdable(Prefab, DirectObject):
         return
 
     def _rotateTask(self, task):
-        self.setP(Globals.base.render, .0)
+        self.setP(_Globals.base.render, .0)
         self.setH(self, .1)
-        self.setR(Globals.base.render, .0)
+        self.setR(_Globals.base.render, .0)
         return task.again
 
     def hold(self):
-        Globals.player.setHolded(self)
-        self.reparentTo(Globals.player.holder)
+        _Globals.player.setHolded(self)
+        self.reparentTo(_Globals.player.holder)
         self.setScale(.3)
         self.setPos(.4, 1.9, -.3)
         try:
@@ -97,8 +111,8 @@ class Holdable(Prefab, DirectObject):
         return
 
     def drop(self):
-        self.reparentTo(Globals.render)
-        self.setPos(Globals.player.getPos())
+        self.reparentTo(_Globals.render)
+        self.setPos(_Globals.player.getPos())
         self.setP(0)
         self.setR(0)
         self.setScale(1)
@@ -111,7 +125,9 @@ class Holdable(Prefab, DirectObject):
         self.doMethodLater(self._timer, lambda x: self.removeNode(), "destroy")
         return
     
-    def onClick(self, collided): # to be overridden, changes based on prefab
+    def onClick(self, collided): # allows check on faced interactable
+        interval = MopathInterval(self.anim, _Globals.player.holder, name="atkaction")
+        interval.start()
         pass
 
     def throw(self): # launches the model (straight line? mopath?)
