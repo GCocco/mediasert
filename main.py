@@ -22,7 +22,6 @@ class Mediasert(ShowBase):
 if __name__ == "__main__":
     ms = Mediasert()
     me = FPController(ms)
-    config.init_player(me)
 
     #debug
     light = ms.camera.attachNewNode(DirectionalLight("light"))

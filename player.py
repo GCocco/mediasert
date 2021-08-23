@@ -7,7 +7,7 @@ from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, Col
 from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
 from panda3d.core import Thread
 from events import EventMap
-from config import GUI_FSM
+from config import GUI_FSM, init_player
 
 SIN45 = 0.7071
 
@@ -80,6 +80,7 @@ class FPController(DirectObject, NodePath):
 
     def __init__(self, base):
         NodePath.__init__(self, "player")
+        init_player(self)
         self._mouseWatcher = base.mouseWatcherNode
         self._win = base.win
         self._renderNP = base.render
@@ -139,8 +140,8 @@ class FPController(DirectObject, NodePath):
         
         self._interact_handler = _InteractHandler(_ray_np, self._renderNP)
         self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
-
         self._holded = None
+
         #debug
         self.accept("l", self.ls)
         self.accept("p", lambda: print(self.getPos()))

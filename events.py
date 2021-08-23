@@ -66,6 +66,11 @@ class EventMap:
     @staticmethod
     def update(event_id, event):
         EventMap._EVENT_MAP[event_id] = event
+        return
+
+    @staticmethod
+    def remove(event_id):
+        return EventMap._EVENT_MAP.pop(event_id)
 
     @staticmethod
     def startEvent(event_id):

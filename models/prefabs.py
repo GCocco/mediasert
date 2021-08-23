@@ -33,10 +33,48 @@ class Prefab(NodePath):
 
 
 class Holdable(Prefab, DirectObject):
+    _IDs = []
+    _lowest_id = 1
     _timer = 20
-    def __init__(self, model_path, placeholder=None):
+    
+    
+    def __init__(self, model_path, placeholder=None, unholded_event=None):
         super().__init__(model_path, placeholder=placeholder)
+        self._instance_id = 0
+        self._generate_id()
+        self.find("**/+CollisionNode").setTag("interactable_id", str(self._instance_id))
+        self._set_event()
         pass
+
+
+    def _set_event(self, text="prendi", onClick=None):
+        if onClick:
+            events.EventMap.update(str(self._instance_id), events.NoticeText(text, onClick=onClick))
+            return
+        else:
+            events.EventMap.update(str(self._instance_id), events.NoticeText(text, onClick=events.ActionEvent(self.hold)))
+            return
+    
+    def __del__(self):
+        self._free_id()
+        events.EventMap.remove(str(self._instance_id))
+        return
+
+    def _generate_id(self):
+        while Holdable._lowest_id in  Holdable._IDs:
+            Holdable._lowest_id += 1
+        self._instance_id = Holdable._lowest_id
+        Holdable._lowest_id += 1
+        return
+
+    def _free_id(self):
+        try:
+            Holdable._IDs.remove(self._instance_id)
+        except ValueError:
+            pass
+        if self._instance_id < Holdable._lowest_id:
+            Holdable._lowest_id = self._instance_id
+        return
 
     def _rotateTask(self, task):
         self.setP(Globals.base.render, .0)
@@ -107,12 +145,10 @@ class CoffeMachine(Prefab):
     pass
 
 
-class Coffe(Holdable):
+class Coffe(Holdable): 
     def __init__(self, placeholder=None):
         super().__init__("./models/props/coffe_cup.egg", placeholder=placeholder)
         self.set_masks()
-        events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
-                               events.NoticeText("prendi", onClick=events.ActionEvent(self.hold)))
         pass
     pass
 
