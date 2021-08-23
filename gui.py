@@ -11,6 +11,7 @@ class NoticeBox(DirectFrame):
         super().__init__(frameSize=(-1, 1, -.1, .1), frameColor=(.1, .1, .9, .2), pos=(.0, .0, -.3))
         self.initialiseoptions(NoticeBox)
         self._text = OnscreenText(parent=self, text="sample text", mayChange=True)
+        self.hide()
         pass
 
     def changeText(self, text):
@@ -21,7 +22,7 @@ class NoticeBox(DirectFrame):
 
 class _GUI:
     NoticeBox = NoticeBox()
-
+    
 
 from direct.fsm.FSM import FSM
 
