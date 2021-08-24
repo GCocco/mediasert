@@ -6,6 +6,11 @@ from models.prefabs import PREFAB_MAP
 from utils import BitMasks
 from panda3d.core import AmbientLight
 
+
+# debug
+from actors import MaleNPC
+
+
 class EmptyMap(DirectObject, NodePath):
     
     def __init__(self, base, name="map"):
@@ -35,3 +40,9 @@ class Map_01(EmptyMap):
         base.render.setLight(self.ambient)
         self.setMask()
         self.parse()
+
+        # debug
+        self._npc = MaleNPC()
+        self._npc.reparentTo(self)
+        self._npc.loop("Idle")
+        self._npc.setScale(2)
