@@ -4,7 +4,7 @@ from panda3d.core import NodePath
 from settings import ControllerSettings
 from utils import Direction, BitMasks
 from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher
-from panda3d.core import CollisionLine, CollisionHandlerQueue, CollisionRay
+from panda3d.core import CollisionSegment, CollisionHandlerQueue, CollisionRay
 from panda3d.core import Thread
 from events import EventMap
 from config import get_globals, init_player
@@ -138,7 +138,7 @@ class FPController(DirectObject, NodePath):
         _ray_node.setFromCollideMask(BitMasks.Interactable)
         _ray_node.setIntoCollideMask(BitMasks.Empty)
         _ray_np.show()
-        _ray_node.addSolid(CollisionLine((.0, .0, .0), (.0, -.4,.0)))
+        _ray_node.addSolid(CollisionSegment(.0, .0, .0, .0, 4, .0))
         
         self._interact_handler = _InteractHandler(_ray_np, self._renderNP)
         self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
