@@ -126,7 +126,7 @@ class Holdable(Prefab, DirectObject):
         return
     
     def onClick(self):
-        interval = MopathInterval(self.anim, _Globals.player.holder, name="atkaction")
+        interval = MopathInterval(self.anim, _Globals.player.holder, .02, name="atkaction")
         interval.start()
         pass
 
