@@ -77,8 +77,12 @@ class EventMap:
 
     @staticmethod
     def remove(event_id):
-        EventMap._EVENT_MAP.pop(event_id)
-
+        try:
+            EventMap._EVENT_MAP.pop(event_id)
+            return
+        except KeyError:
+            return
+        return
     @staticmethod
     def startEvent(event_id):
         _Globals.gui_fsm(EventMap._EVENT_MAP[event_id]) 

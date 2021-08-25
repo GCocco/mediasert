@@ -43,6 +43,6 @@ class Map_01(EmptyMap):
 
         # debug
         self._npc = MaleNPC()
+        self._npc.setPos(0, -5, 0)
         self._npc.reparentTo(self)
         self._npc.loop("Idle")
-        self._npc.setScale(2)

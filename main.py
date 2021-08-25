@@ -16,7 +16,11 @@ class Mediasert(ShowBase):
         config.init_config(self)
         self.disableMouse()
         self.accept("escape", exit)
-    pass
+
+        def showcolliders():
+            for collider in self.render.findAllMatches("**/+CollisionNode"):
+                collider.getParent().show()
+        pass
 
 
 

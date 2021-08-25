@@ -1,7 +1,7 @@
 # config file
 
 class ControllerSettings:
-    Speed = .2
+    Speed = .1
     RotationSpeed = 10
     Forward = "w"
     Back = "s"

@@ -3,7 +3,7 @@ from panda3d.core import NodePath
 
 from settings import ControllerSettings
 from utils import Direction, BitMasks
-from panda3d.core import CollisionTraverser, CollisionSphere, CollisionNode, CollisionHandlerPusher
+from panda3d.core import CollisionTraverser, CollisionCapsule, CollisionNode, CollisionHandlerPusher
 from panda3d.core import CollisionSegment, CollisionHandlerQueue, CollisionRay
 from panda3d.core import Thread
 from events import EventMap
@@ -71,14 +71,14 @@ class _InteractHandler(DirectObject):
 
 class FPController(DirectObject, NodePath):
     _angleMap = {
-        Direction.Forward: (0, ControllerSettings.Speed, 0),
-        Direction.Back: (0, -ControllerSettings.Speed, 0),
-        Direction.Left: (-ControllerSettings.Speed, 0, 0),
-        Direction.Right: (ControllerSettings.Speed, 0, 0),
-        Direction.ForwardRight: (SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, 0),
-        Direction.ForwardLeft: (-SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, 0),
-        Direction.BackRight: (SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, 0),
-        Direction.BackLeft: (-SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, 0)}
+        Direction.Forward: (.0, ControllerSettings.Speed, .0),
+        Direction.Back: (.0, -ControllerSettings.Speed, .0),
+        Direction.Left: (-ControllerSettings.Speed, .0, .0),
+        Direction.Right: (ControllerSettings.Speed, .0, .0),
+        Direction.ForwardRight: (SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, .0),
+        Direction.ForwardLeft: (-SIN45*ControllerSettings.Speed, SIN45*ControllerSettings.Speed, .0),
+        Direction.BackRight: (SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, .0),
+        Direction.BackLeft: (-SIN45*ControllerSettings.Speed, -SIN45*ControllerSettings.Speed, .0)}
 
     def __init__(self, base):
         NodePath.__init__(self, "player")
@@ -88,8 +88,8 @@ class FPController(DirectObject, NodePath):
         self._renderNP = base.render
         self.reparentTo(base.render)
         self.camera = base.camera
-        self.camera.setZ(4)
-        self.camera.setY(-.2)
+        self.camera.setZ(1.8)
+        self.camera.setY(-.1)
         self.camera.reparentTo(self)
         # movement ontroller                                                                                                                                 
         self._inputs = {ControllerSettings.Forward: False,
@@ -122,9 +122,10 @@ class FPController(DirectObject, NodePath):
         # collision management
 
         self._trav = CollisionTraverser()
+        _Globals.base.ctrav = self._trav
         _col_node = CollisionNode("playerCollider")
-        _col_node.addSolid(CollisionSphere(0.0, 0.0, 1.5, 1.5))
-        _col_node.setFromCollideMask(BitMasks.Solid) 
+        _col_node.addSolid(CollisionCapsule(.0, .0, .4, .0, .0, 1.4, .39))
+        _col_node.setFromCollideMask(BitMasks.Solid)
         _col_node.setIntoCollideMask(BitMasks.Empty)
         _col_np = self.attachNewNode(_col_node)
         self._pusher = CollisionHandlerPusher()
@@ -229,13 +230,13 @@ class FPController(DirectObject, NodePath):
         return Direction.Undefined
 
     def _controllerTask(self, task):
+        if self.DEBUG_TASKFLAG:
+            return task.again
         dire = self._getDirection()
         if dire is not Direction.Undefined:
             self.setPos(self, self._angleMap[dire])
             pass
         if self._mouseWatcher.hasMouse():
-            if self.DEBUG_TASKFLAG:
-                return task.again
             x, y = self._mouseWatcher.getMouseX(), self._mouseWatcher.getMouseY()
             self.setH(self, -x * ControllerSettings.RotationSpeed)
             self.camera.setP(self.camera, y *ControllerSettings.RotationSpeed)
