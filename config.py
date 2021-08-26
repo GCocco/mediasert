@@ -3,10 +3,12 @@
 
 
 def init_config(base):
-    from panda3d.core import CollisionTraverser
+    from panda3d.core import CollisionTraverser, CollisionHandlerPusher
     
     _Globals.base = base
     _Globals.base.cTrav = CollisionTraverser()
+    _Globals.base.cTrav.setRespectPrevTransform(True)
+    _Globals.pusher = CollisionHandlerPusher()
     _Globals.loader = base.loader
     _Globals.render = base.render
     return

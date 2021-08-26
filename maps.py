@@ -7,9 +7,6 @@ from utils import BitMasks
 from panda3d.core import AmbientLight
 
 
-# debug
-from actors import MaleNPC
-
 
 class EmptyMap(DirectObject, NodePath):
     
@@ -41,8 +38,3 @@ class Map_01(EmptyMap):
         self.setMask()
         self.parse()
 
-        # debug
-        self._npc = MaleNPC()
-        self._npc.setPos(0, -5, 0)
-        self._npc.reparentTo(self)
-        self._npc.loop("Idle")

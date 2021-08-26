@@ -6,8 +6,10 @@ from panda3d.core import LColor, Material
 
 from panda3d.core import CollisionCapsule, CollisionNode, CollisionBox
 from utils import BitMasks
+from config import get_globals
 
 seed()
+_Globals = get_globals()
 
 def alter(base, delta): # slightly changes a [0-1] float by adding or subtracting a [0-delta] value
     return base + ((delta * 2 * random()) - delta) 
@@ -16,10 +18,10 @@ ambient_default = LColor(.0, .0, .0, 1.0)
 
 class MaleNPC(Actor):
     def __init__(self):
-        Actor.__init__(self, "./models/actors/male.egg",
-                       {"Walk": "./models/actors/male-Walk.egg",
-                        "Idle": "./models/actors/male-Idle.egg",
-                        "Pain": "./models/actors/male-Pain.egg"})
+        super().__init__("./models/actors/male.egg",
+                         {"Walk": "./models/actors/male-Walk.egg",
+                          "Idle": "./models/actors/male-Idle.egg",
+                          "Pain": "./models/actors/male-Pain.egg"})
 
         shirt_material = Material()
         shirt_material.setDiffuse(LColor(random(), random(), random(), 1.0))
@@ -41,13 +43,14 @@ class MaleNPC(Actor):
         self.findMaterial("Mouth").setAmbient(ambient_default) # TODO: posso modificare dal .egg
         self.findMaterial("Shoes").setAmbient(ambient_default) # idem come sopra
 
+        
+        self._coll_np = self.attachNewNode(CollisionNode("npc_collider"))
 
-        coll_node = CollisionNode("npc_collider")
-        self._coll_np = self.attachNewNode(coll_node)
-
-        coll_node.addSolid(CollisionBox((.3, .3, .0), (-.3, -.3, 1.8)))
-        coll_node.setIntoCollideMask(BitMasks.Solid)
-        coll_node.setFromCollideMask(BitMasks.Empty)
+        self._coll_np.node().addSolid(CollisionBox((.0, .0, .9), .2, .2, .9))
+        self._coll_np.node().setIntoCollideMask(BitMasks.Solid)
+        self._coll_np.node().setFromCollideMask(BitMasks.Empty)
         self._coll_np.show()
+        _Globals.pusher.addCollider(self._coll_np, self)
+        _Globals.base.cTrav.addCollider(self._coll_np, _Globals.pusher)
         pass
     pass

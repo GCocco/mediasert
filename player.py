@@ -3,7 +3,7 @@ from panda3d.core import NodePath
 
 from settings import ControllerSettings
 from utils import Direction, BitMasks
-from panda3d.core import CollisionTraverser, CollisionNode, CollisionHandlerPusher
+from panda3d.core import CollisionTraverser, CollisionNode
 from panda3d.core import CollisionSegment, CollisionHandlerQueue, CollisionRay, CollisionBox
 from panda3d.core import Thread
 from events import EventMap
@@ -86,9 +86,9 @@ class FPController(DirectObject, NodePath):
         self.reparentTo(base.render)
         self.camera = base.camera
         self.camera.setZ(1.8)
-        self.camera.setY(-.3)
+        self.camera.setY(-.6)
         self.camera.reparentTo(self)
-        # movement ontroller                                                                                                                                 
+        # movement controller                                                                                                                                 
         self._inputs = {ControllerSettings.Forward: False,
                         ControllerSettings.Back: False,
                         ControllerSettings.Left: False,
@@ -119,14 +119,13 @@ class FPController(DirectObject, NodePath):
         # collision management
         
         _col_node = CollisionNode("playerCollider")
-        _col_node.addSolid(CollisionBox((.45, .45, .0), (-.45, -.45, 1.8)))
+        _col_node.addSolid(CollisionBox((.0, .0, .9), .4, .4, .9))
         _col_node.setFromCollideMask(BitMasks.Solid)
         _col_node.setIntoCollideMask(BitMasks.Empty)
         _col_np = self.attachNewNode(_col_node)
         _col_np.show()
-        self._pusher = CollisionHandlerPusher()
-        self._pusher.addCollider(_col_np, self)
-        _Globals.base.cTrav.addCollider(_col_np, self._pusher)
+        _Globals.pusher.addCollider(_col_np, self)
+        _Globals.base.cTrav.addCollider(_col_np, _Globals.pusher)
 
         # raycast interaction
 
@@ -157,7 +156,6 @@ class FPController(DirectObject, NodePath):
         self._moveswitch = True
         self.accept("mouse1", self._on_click_1)
         self.accept("mouse3", self._on_click_3)
-
         
         pass
 
@@ -230,7 +228,7 @@ class FPController(DirectObject, NodePath):
             return task.again
         dire = self._getDirection()
         if dire is not Direction.Undefined:
-            self.setPos(self, self._angleMap[dire])
+            self.setFluidPos(self, self._angleMap[dire])
             pass
         if self._mouseWatcher.hasMouse():
             x, y = self._mouseWatcher.getMouseX(), self._mouseWatcher.getMouseY()

@@ -15,7 +15,7 @@ class Direction(IntEnum):
     pass
 
 class BitMasks:
-    Solid = BitMask32(7)
+    Solid = BitMask32(5)
     Interactable = BitMask32(8)
     Empty = BitMask32.allOff()
 

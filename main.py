@@ -2,7 +2,7 @@
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import DirectionalLight
-
+import utils # sets masks 
 import config
 import gui
 
@@ -31,6 +31,13 @@ if __name__ == "__main__":
     ms = Mediasert()
     me = FPController(ms)
     light = ms.camera.attachNewNode(DirectionalLight("light"))
+    from actors import MaleNPC
+
+    npc = MaleNPC()
+    npc.setY(-4)
+    npc.reparentTo(ms.render)
+    npc.loop("Idle")
+    
     ms.render.setLight(light)
     
     map = Map_01(ms)
