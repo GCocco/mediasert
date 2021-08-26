@@ -4,7 +4,7 @@ from direct.actor.Actor import Actor
 from random import seed, random, choice
 from panda3d.core import LColor, Material
 
-from panda3d.core import CollisionCapsule, CollisionNode
+from panda3d.core import CollisionCapsule, CollisionNode, CollisionBox
 from utils import BitMasks
 
 seed()
@@ -42,10 +42,12 @@ class MaleNPC(Actor):
         self.findMaterial("Shoes").setAmbient(ambient_default) # idem come sopra
 
 
+        coll_node = CollisionNode("npc_collider")
+        coll_np = self.attachNewNode(coll_node)
 
-        collider = self.attachNewNode(CollisionNode("collider"))
-        collider.node().addSolid(CollisionCapsule(.0, .0, .5, .0, .0, 1.3, .5))
-        collider.node().setIntoCollideMask(BitMasks.Solid)
-        collider.node().setFromCollideMask(BitMasks.Empty)
+        coll_node.addSolid(CollisionBox((.3, .3, .0), (-.3, -.3, 1.8)))
+        coll_node.setIntoCollideMask(BitMasks.Solid)
+        coll_node.setFromCollideMask(BitMasks.Empty)
+        coll_np.show()
         pass
     pass

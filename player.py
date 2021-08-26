@@ -3,8 +3,8 @@ from panda3d.core import NodePath
 
 from settings import ControllerSettings
 from utils import Direction, BitMasks
-from panda3d.core import CollisionTraverser, CollisionCapsule, CollisionNode, CollisionHandlerPusher
-from panda3d.core import CollisionSegment, CollisionHandlerQueue, CollisionRay
+from panda3d.core import CollisionTraverser, CollisionNode, CollisionHandlerPusher
+from panda3d.core import CollisionSegment, CollisionHandlerQueue, CollisionRay, CollisionBox
 from panda3d.core import Thread
 from events import EventMap
 from config import get_globals, init_player
@@ -89,7 +89,7 @@ class FPController(DirectObject, NodePath):
         self.reparentTo(base.render)
         self.camera = base.camera
         self.camera.setZ(1.8)
-        self.camera.setY(-.1)
+        self.camera.setY(-.3)
         self.camera.reparentTo(self)
         # movement ontroller                                                                                                                                 
         self._inputs = {ControllerSettings.Forward: False,
@@ -124,10 +124,11 @@ class FPController(DirectObject, NodePath):
         self._trav = CollisionTraverser()
         _Globals.base.ctrav = self._trav
         _col_node = CollisionNode("playerCollider")
-        _col_node.addSolid(CollisionCapsule(.0, .0, .4, .0, .0, 1.4, .39))
+        _col_node.addSolid(CollisionBox((.45, .45, .0), (-.45, -.45, 1.8)))
         _col_node.setFromCollideMask(BitMasks.Solid)
         _col_node.setIntoCollideMask(BitMasks.Empty)
         _col_np = self.attachNewNode(_col_node)
+        _col_np.show()
         self._pusher = CollisionHandlerPusher()
         self._pusher.addCollider(_col_np, self)
         self._trav.addCollider(_col_np, self._pusher)

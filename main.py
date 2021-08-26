@@ -20,6 +20,8 @@ class Mediasert(ShowBase):
         def showcolliders():
             for collider in self.render.findAllMatches("**/+CollisionNode"):
                 collider.getParent().show()
+
+        self.accept("c", showcolliders)
         pass
 
 
