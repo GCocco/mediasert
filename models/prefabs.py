@@ -3,7 +3,7 @@
 from direct.showbase.DirectObject import DirectObject
 from panda3d.core import NodePath
 from config import get_globals
-from utils import BitMasks
+from utils import BitMasks, EventMap
 import events
 from direct.directutil.Mopath import Mopath
 from direct.interval.MopathInterval import MopathInterval
@@ -34,9 +34,25 @@ class Prefab(NodePath):
     pass
 
 
-class Holdable(Prefab, DirectObject):
-    _IDs = []
-    _lowest_id = 1
+class EventablePrefab(Prefab, DirectObject):
+    _SEED = 0
+    def __init__(self, model_path, placeholder=None):
+        Prefab.__init__(self, model_path, placeholder=placeholder)
+        self._id = EventablePrefab._SEED
+        EventablePrefab._SEED += 1
+        pass
+    
+    def setEvent(self, event):
+        EventMap.update(str(self._id), event)
+        return
+
+    def __del__(self):
+        EventMap.remove(str(self._id))
+        return
+    pass
+
+
+class Holdable(EventablePrefab):
     _timer = 20
 
     anim = Mopath()
@@ -49,47 +65,15 @@ class Holdable(Prefab, DirectObject):
         Holdable._anim_is_loaded = True
         return
     
-    def __init__(self, model_path, placeholder=None, unholded_event=None):
+    def __init__(self, model_path, placeholder=None):
         super().__init__(model_path, placeholder=placeholder)
-        self._instance_id = 0
         if not self._anim_is_loaded:
             self._load_mopath()
             pass
-        self._generate_id()
-        self.find("**/+CollisionNode").setTag("interactable_id", str(self._instance_id))
-        self._set_event()
+        self.find("**/+CollisionNode").setTag("interactable_id", str(self._id))
+        self.setEvent(events.NoticeText("prendi", onClick=events.ActionEvent(self.hold)))
         pass
-
-
-    def _set_event(self, text="prendi", onClick=None):
-        if onClick:
-            events.EventMap.update(str(self._instance_id), events.NoticeText(text, onClick=onClick))
-            return
-        else:
-            events.EventMap.update(str(self._instance_id), events.NoticeText(text, onClick=events.ActionEvent(self.hold)))
-            return
     
-    def __del__(self):
-        self._free_id()
-        events.EventMap.remove(str(self._instance_id))
-        return
-
-    def _generate_id(self):
-        while Holdable._lowest_id in  Holdable._IDs:
-            Holdable._lowest_id += 1
-        self._instance_id = Holdable._lowest_id
-        Holdable._lowest_id += 1
-        return
-
-    def _free_id(self):
-        try:
-            Holdable._IDs.remove(self._instance_id)
-        except ValueError:
-            pass
-        if self._instance_id < Holdable._lowest_id:
-            Holdable._lowest_id = self._instance_id
-        return
-
     def _rotateTask(self, task):
         self.setP(_Globals.base.render, .0)
         self.setH(self, .1)
@@ -128,10 +112,6 @@ class Holdable(Prefab, DirectObject):
         interval.start()
         pass
 
-    def throw(self): # launches the model (straight line? mopath?)
-        pass # todo: implement
-    pass
-
 
 class Door_01(Prefab):
     def __init__(self, placeholder=None):
@@ -149,8 +129,8 @@ class CoffeMachine(Prefab):
         if placeholder:
             self.copyTransform(placeholder)
         self.set_masks()
-        events.EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
-                               events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self.dispense_coffe)))
+        EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
+                        events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self.dispense_coffe)))
         
     def dispense_coffe(self):
         coffe = Coffe(self.find("**/cup_placeholder"))

@@ -4,9 +4,10 @@ from direct.actor.Actor import Actor
 from random import seed, random, choice
 from panda3d.core import LColor, Material
 
-from panda3d.core import CollisionCapsule, CollisionNode, CollisionBox
+from panda3d.core import CollisionNode, CollisionBox
 from utils import BitMasks
 from config import get_globals
+import events
 
 seed()
 _Globals = get_globals()

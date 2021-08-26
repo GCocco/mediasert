@@ -6,7 +6,7 @@ from utils import Direction, BitMasks
 from panda3d.core import CollisionTraverser, CollisionNode
 from panda3d.core import CollisionSegment, CollisionHandlerQueue, CollisionRay, CollisionBox
 from panda3d.core import Thread
-from events import EventMap
+from utils import EventMap
 from config import get_globals, init_player
 
 _Globals = get_globals()

@@ -66,26 +66,3 @@ class ActionEvent(Event):
             return
         pass
     pass
-
-
-class EventMap:
-    _EVENT_MAP = {"closed_door": NoticeText("Apri", onClick=NoticeText("La porta è chiusa"))}
-    @staticmethod
-    def update(event_id, event):
-        EventMap._EVENT_MAP[event_id] = event
-        return
-
-    @staticmethod
-    def remove(event_id):
-        try:
-            EventMap._EVENT_MAP.pop(event_id)
-            return
-        except KeyError:
-            return
-        return
-    @staticmethod
-    def startEvent(event_id):
-        _Globals.gui_fsm(EventMap._EVENT_MAP[event_id]) 
-
-    def clickEvent(event_id):
-        _Globals.gui_fsm(EventMap._EVENT_MAP[event_id].onClick)
