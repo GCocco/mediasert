@@ -99,7 +99,6 @@ class Holdable(Prefab, DirectObject):
     def hold(self):
         _Globals.player.setHolded(self)
         self.reparentTo(_Globals.player.holder)
-        self.setScale(.3)
         self.setPos(.4, 1.9, -.3)
         try:
             self.find("**/=mask=interactable").node().setIntoCollideMask(BitMasks.Empty)
@@ -115,7 +114,6 @@ class Holdable(Prefab, DirectObject):
         self.setPos(_Globals.player.getPos())
         self.setP(0)
         self.setR(0)
-        self.setScale(1)
         try:
             self.find("**/=mask=interactable").node().setIntoCollideMask(BitMasks.Interactable)
             pass

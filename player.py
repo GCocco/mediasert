@@ -15,13 +15,11 @@ SIN45 = 0.7071
 
 
 class _InteractHandler(DirectObject):
-    def __init__(self, raynode, renderNP):
+    def __init__(self, raynode):
         self._interrupt = False
         self._last_collided = None
-        self._trav = CollisionTraverser()
         self._queue = CollisionHandlerQueue()
-        self._trav.addCollider(raynode, self._queue)
-        self._renderNP = renderNP
+        _Globals.base.cTrav.addCollider(raynode, self._queue)
         pass
 
     @property
@@ -29,7 +27,6 @@ class _InteractHandler(DirectObject):
         return self._last_collided
 
     def interactTask(self, task):
-        self._trav.traverse(self._renderNP)
         if self._queue.getNumEntries():
             self._queue.sortEntries()
             self(self._queue.getEntry(0).getIntoNode())
@@ -120,9 +117,7 @@ class FPController(DirectObject, NodePath):
         self._holderNP = self.camera.attachNewNode("holder")
 
         # collision management
-
-        self._trav = CollisionTraverser()
-        _Globals.base.ctrav = self._trav
+        
         _col_node = CollisionNode("playerCollider")
         _col_node.addSolid(CollisionBox((.45, .45, .0), (-.45, -.45, 1.8)))
         _col_node.setFromCollideMask(BitMasks.Solid)
@@ -131,7 +126,7 @@ class FPController(DirectObject, NodePath):
         _col_np.show()
         self._pusher = CollisionHandlerPusher()
         self._pusher.addCollider(_col_np, self)
-        self._trav.addCollider(_col_np, self._pusher)
+        _Globals.base.cTrav.addCollider(_col_np, self._pusher)
 
         # raycast interaction
 
@@ -142,7 +137,7 @@ class FPController(DirectObject, NodePath):
         _ray_np.show()
         _ray_node.addSolid(CollisionSegment(.0, .0, .0, .0, 4, .0))
         
-        self._interact_handler = _InteractHandler(_ray_np, self._renderNP)
+        self._interact_handler = _InteractHandler(_ray_np)
         self._interact_handler.doMethodLater(.02, self._interact_handler.interactTask, "interact-task")
         self._holded = None
 
@@ -251,7 +246,6 @@ class FPController(DirectObject, NodePath):
             self._win.movePointer(0,
                          props.getXSize() // 2,
                          props.getYSize() // 2)
-        self._trav.traverse(self._renderNP)
         return task.again
     pass
     

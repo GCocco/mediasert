@@ -1,9 +1,12 @@
-# QUESTO MODULO NON DEVE IMPORTARE MODULI IN QUANTO
+# QUESTO MODULO NON DEVE IMPORTARE MODULI CUSTOM IN QUANTO
 # RISCHIA DI CREARE DIPENDENZE CIRCOLARI
 
 
 def init_config(base):
+    from panda3d.core import CollisionTraverser
+    
     _Globals.base = base
+    _Globals.base.cTrav = CollisionTraverser()
     _Globals.loader = base.loader
     _Globals.render = base.render
     return

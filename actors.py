@@ -43,11 +43,11 @@ class MaleNPC(Actor):
 
 
         coll_node = CollisionNode("npc_collider")
-        coll_np = self.attachNewNode(coll_node)
+        self._coll_np = self.attachNewNode(coll_node)
 
         coll_node.addSolid(CollisionBox((.3, .3, .0), (-.3, -.3, 1.8)))
         coll_node.setIntoCollideMask(BitMasks.Solid)
         coll_node.setFromCollideMask(BitMasks.Empty)
-        coll_np.show()
+        self._coll_np.show()
         pass
     pass

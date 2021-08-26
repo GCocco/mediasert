@@ -15,6 +15,7 @@ class Mediasert(ShowBase):
         super().__init__()
         config.init_config(self)
         self.disableMouse()
+        
         self.accept("escape", exit)
 
         def showcolliders():
