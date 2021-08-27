@@ -1,7 +1,7 @@
 # prefabs assets
 
 from direct.showbase.DirectObject import DirectObject
-from panda3d.core import NodePath
+from panda3d.core import NodePath, CollisionNode, CollisionBox
 from config import get_globals
 from utils import BitMasks, EventMap
 import events
@@ -31,6 +31,18 @@ class Prefab(NodePath):
         for collider in self.findAllMatches("**/+CollisionNode"):
             collider.node().setFromCollideMask(BitMasks.Empty)
         return
+    pass
+
+
+class Plant(Prefab):
+    def __init__(self, placeholder=None):
+        Prefab.__init__(self, "./models/maps/maps_props/plant.egg",  placeholder=placeholder)
+        coll = self.attachNewNode(CollisionNode("plant-collider"))
+        coll.node().addSolid(CollisionBox((.0, .0, .4), .1, .1, .4))
+        coll.show()
+        # self.set_masks()
+        print("ayyyyyyyyyy")
+        pass
     pass
 
 class Table(Prefab):
@@ -162,4 +174,5 @@ class Lamp_01(Prefab):
 PREFAB_MAP = {"Door_01": Door_01,
               "CoffeMachine": CoffeMachine,
               "Lamp_01": Lamp_01,
-              "Table": Table}
+              "Table": Table,
+              "Plant": Plant}

@@ -1,5 +1,20 @@
 <CoordinateSystem> { Z-up } 
 <Material> map_01 {
+  <Scalar> diffr { 0.000000 }
+  <Scalar> diffg { 0.000000 }
+  <Scalar> diffb { 0.000000 }
+  <Scalar> diffa { 0.000000 }
+  <Scalar> specr { 0.500000 }
+  <Scalar> specg { 0.500000 }
+  <Scalar> specb { 0.500000 }
+  <Scalar> speca { 0.000000 }
+  <Scalar> shininess { 0.0 }
+  <Scalar> ambr { 0.000000 }
+  <Scalar> ambg { 0.000000 }
+  <Scalar> ambb { 0.000000 }
+  <Scalar> emitr { 0.000000 }
+  <Scalar> emitg { 0.000000 }
+  <Scalar> emitb { 0.000000 }
 }
 
 <Texture> level_01 {
@@ -2131,7 +2146,19 @@
       <BFace> { 1 }
       <VertexRef> { 308 309 310 311 <Ref> { lvl_01 }} 
     }
-    <Group> Empty {
+    <Group> plant_placeholder {
+      <Tag> prefab { Plant }
+      <Transform> {
+        <Matrix4> {
+          1.0 0.0 0.0 0.0 
+          0.0 1.0 0.0 0.0 
+          0.0 0.0 1.0 0.0 
+          0.6251714825630188 -8.050816535949707 0.0 1.0 
+        }
+      }
+      
+    }
+    <Group> table_placeholder {
       <Tag> prefab { Table }
       <Transform> {
         <Matrix4> {
