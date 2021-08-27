@@ -33,6 +33,12 @@ class Prefab(NodePath):
         return
     pass
 
+class Table(Prefab):
+    def __init__(self, placeholder=None):
+        Prefab.__init__(self, "./models/maps/maps_props/table.egg", placeholder=placeholder)
+        self.set_masks()
+        pass
+    pass
 
 class EventablePrefab(Prefab, DirectObject):
     _SEED = 0
@@ -155,4 +161,5 @@ class Lamp_01(Prefab):
 
 PREFAB_MAP = {"Door_01": Door_01,
               "CoffeMachine": CoffeMachine,
-              "Lamp_01": Lamp_01}
+              "Lamp_01": Lamp_01,
+              "Table": Table}

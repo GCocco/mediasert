@@ -2131,6 +2131,18 @@
       <BFace> { 1 }
       <VertexRef> { 308 309 310 311 <Ref> { lvl_01 }} 
     }
+    <Group> Empty {
+      <Tag> prefab { Table }
+      <Transform> {
+        <Matrix4> {
+          1.0 0.0 0.0 0.0 
+          0.0 1.0 0.0 0.0 
+          0.0 0.0 1.0 0.0 
+          0.6824705004692078 -0.4860017001628876 0.0 1.0 
+        }
+      }
+      
+    }
     <Group> door_placeholder {
       <Tag> prefab { Door_01 }
       <Tag> interactable_id { closed_door }

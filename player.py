@@ -226,10 +226,12 @@ class FPController(DirectObject, NodePath):
     def _controllerTask(self, task):
         if self.DEBUG_TASKFLAG:
             return task.again
+        self.setZ(.0)
         dire = self._getDirection()
         if dire is not Direction.Undefined:
             self.setFluidPos(self, self._angleMap[dire])
             pass
+        # self.setZ(self, -.2)
         if self._mouseWatcher.hasMouse():
             x, y = self._mouseWatcher.getMouseX(), self._mouseWatcher.getMouseY()
             self.setH(self, -x * ControllerSettings.RotationSpeed)
