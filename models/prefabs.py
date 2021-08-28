@@ -39,9 +39,8 @@ class Plant(Prefab):
         Prefab.__init__(self, "./models/maps/maps_props/plant.egg",  placeholder=placeholder)
         coll = self.attachNewNode(CollisionNode("plant-collider"))
         coll.node().addSolid(CollisionBox((.0, .0, .4), .1, .1, .4))
-        coll.show()
-        # self.set_masks()
-        print("ayyyyyyyyyy")
+        coll.node().setIntoCollideMask(BitMasks.Solid)
+        coll.node().setFromCollideMask(BitMasks.Empty)
         pass
     pass
 
@@ -49,6 +48,12 @@ class Table(Prefab):
     def __init__(self, placeholder=None):
         Prefab.__init__(self, "./models/maps/maps_props/table.egg", placeholder=placeholder)
         self.set_masks()
+        self.find("**/+CollisionNode").removeNode() # TODO: remove from file/raw
+        coll = self.attachNewNode(CollisionNode("table-collider"))
+        coll.node().addSolid(CollisionBox((.0, .0, .3), .3, .3, .3))
+        coll.node().setIntoCollideMask(BitMasks.Solid)
+        coll.node().setFromCollideMask(BitMasks.Empty)
+        coll.show()
         pass
     pass
 
@@ -147,6 +152,11 @@ class CoffeMachine(Prefab):
         if placeholder:
             self.copyTransform(placeholder)
         self.set_masks()
+        self.find("**/=mask=solid").removeNode() # TODO: remove from file/raw
+        coll = self.attachNewNode(CollisionNode("machine-collider"))
+        coll.node().addSolid(CollisionBox((.0, -.28, .95), .48, .28, .95))
+        coll.node().setIntoCollideMask(BitMasks.Solid)
+        coll.node().setFromCollideMask(BitMasks.Empty)
         EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
                         events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self.dispense_coffe)))
         
