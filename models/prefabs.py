@@ -21,7 +21,18 @@ class Prefab(NodePath):
     def copyTransform(self, other_node):
         self.setPosHprScale(other_node.getPos(), other_node.getHpr(), other_node.getScale())
         return
-    
+
+    def _addSolidCollider(self, collision_solid, *extra_solids):
+        coll = self.attachNewNode(CollisionNode("collider-solid"))
+        coll.node().addSolid(collision_solid)
+        for solid in extra_solids:
+            coll.node().addSolid(solid)
+            pass
+        coll.node().setIntoCollideMask(BitMasks.Solid)
+        coll.node().setFromCollideMask(BitMasks.Empty)
+        coll.show()
+        return coll
+
     def set_masks(self):
         
         for interactable in self.findAllMatches("**/=mask=interactable"):
@@ -37,10 +48,7 @@ class Prefab(NodePath):
 class Plant(Prefab):
     def __init__(self, placeholder=None):
         Prefab.__init__(self, "./models/maps/maps_props/plant.egg",  placeholder=placeholder)
-        coll = self.attachNewNode(CollisionNode("plant-collider"))
-        coll.node().addSolid(CollisionBox((.0, .0, .4), .1, .1, .4))
-        coll.node().setIntoCollideMask(BitMasks.Solid)
-        coll.node().setFromCollideMask(BitMasks.Empty)
+        self._addSolidCollider(CollisionBox((.0, .0, .4), .1, .1, .4))
         pass
     pass
 
@@ -48,14 +56,15 @@ class Table(Prefab):
     def __init__(self, placeholder=None):
         Prefab.__init__(self, "./models/maps/maps_props/table.egg", placeholder=placeholder)
         self.set_masks()
-        self.find("**/+CollisionNode").removeNode() # TODO: remove from file/raw
-        coll = self.attachNewNode(CollisionNode("table-collider"))
-        coll.node().addSolid(CollisionBox((.0, .0, .3), .3, .3, .3))
-        coll.node().setIntoCollideMask(BitMasks.Solid)
-        coll.node().setFromCollideMask(BitMasks.Empty)
-        coll.show()
+        self._addSolidCollider(CollisionBox((.0, .0, .3), .3, .3, .3))
         pass
     pass
+
+class CopyMachine(Prefab):
+    def __init__(self, placeholder=None):
+        Prefab.__init__(self, "./models/maps/maps_props/fotocopiatrice.egg", placeholder=placeholder)
+        coll = self.attachNewNode(CollisionNode("copy-machine-collider"))
+        self._addSolidCollider(CollisionBox((.0, .0, .7), .4, .4, .7))
 
 class EventablePrefab(Prefab, DirectObject):
     _SEED = 0
@@ -151,16 +160,12 @@ class CoffeMachine(Prefab):
         super().__init__("./models/maps/maps_props/coffe_machine.egg")
         if placeholder:
             self.copyTransform(placeholder)
-        self.set_masks()
-        self.find("**/=mask=solid").removeNode() # TODO: remove from file/raw
-        coll = self.attachNewNode(CollisionNode("machine-collider"))
-        coll.node().addSolid(CollisionBox((.0, -.28, .95), .48, .28, .95))
-        coll.node().setIntoCollideMask(BitMasks.Solid)
-        coll.node().setFromCollideMask(BitMasks.Empty)
+        self.set_masks()        
+        self._addSolidCollider(CollisionBox((.0, -.28, .95), .48, .28, .95))
         EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
-                        events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self.dispense_coffe)))
+                        events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self._dispense_coffe)))
         
-    def dispense_coffe(self):
+    def _dispense_coffe(self):
         coffe = Coffe(self.find("**/cup_placeholder"))
         coffe.reparentTo(self)
         return
@@ -185,4 +190,5 @@ PREFAB_MAP = {"Door_01": Door_01,
               "CoffeMachine": CoffeMachine,
               "Lamp_01": Lamp_01,
               "Table": Table,
-              "Plant": Plant}
+              "Plant": Plant,
+              "CopyMachine": CopyMachine}
