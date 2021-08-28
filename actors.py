@@ -5,9 +5,10 @@ from random import seed, random, choice
 from panda3d.core import LColor, Material
 
 from panda3d.core import CollisionNode, CollisionBox
-from utils import BitMasks
+from utils import BitMasks, EventMap
 from config import get_globals
 import events
+from direct.fsm.FSM import FSM
 
 seed()
 _Globals = get_globals()
@@ -17,7 +18,39 @@ def alter(base, delta): # slightly changes a [0-1] float by adding or subtractin
 
 ambient_default = LColor(.0, .0, .0, 1.0)
 
-class MaleNPC(Actor):
+
+class NpcFSM(FSM):
+    def __init__(self, npc):
+        FSM.__init__(self, str(npc.getID()))
+        self._npc = npc
+        pass
+
+    def enterIdle(self):
+        self._npc.loop("Idle")
+
+    def enterWalk(self):
+        self._npc.loop("Walk")
+
+    def enterPain(self):
+        self._npc.loop("Pain")
+    pass
+
+
+
+class NPC(Actor):
+    _id_seed = 0
+
+    def getID(self):
+        return self._id
+    
+    
+    def __init__(self, model, animations):
+        super().__init__(model, animations)
+        self._id = NPC._id_seed
+        self._id_seed += 1
+        self._fsm = NpcFSM(self) 
+
+class MaleNPC(NPC):
     def __init__(self):
         super().__init__("./models/actors/male.egg",
                          {"Walk": "./models/actors/male-Walk.egg",
@@ -48,10 +81,14 @@ class MaleNPC(Actor):
         self._coll_np = self.attachNewNode(CollisionNode("npc_collider"))
 
         self._coll_np.node().addSolid(CollisionBox((.0, .0, .9), .2, .2, .9))
-        self._coll_np.node().setIntoCollideMask(BitMasks.Solid)
+        self._coll_np.node().setIntoCollideMask(BitMasks.Solid | BitMasks.Interactable)
         self._coll_np.node().setFromCollideMask(BitMasks.Empty)
+        self._coll_np.setTag("interactable_id", str(self._id))
         self._coll_np.show()
-        _Globals.pusher.addCollider(self._coll_np, self)
-        _Globals.base.cTrav.addCollider(self._coll_np, _Globals.pusher)
+        # _Globals.pusher.addCollider(self._coll_np, self)
+        # _Globals.base.cTrav.addCollider(self._coll_np, _Globals.pusher)
+
+        EventMap.bind(str(self._id), events.Event(onClick=lambda: print("ovolollo")))
+        
         pass
     pass

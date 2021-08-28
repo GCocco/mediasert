@@ -33,8 +33,6 @@ class _GUI_FSM(FSM):
         pass
 
     def __call__(self, event):
-        if event is None:
-            return
         self.request(event.type, event)
         return
 
@@ -69,3 +67,4 @@ class _GUI_FSM(FSM):
     pass
 
 init_gui(_GUI_FSM())
+

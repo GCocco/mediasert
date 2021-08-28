@@ -56,7 +56,7 @@ class Table(Prefab):
     def __init__(self, placeholder=None):
         Prefab.__init__(self, "./models/maps/maps_props/table.egg", placeholder=placeholder)
         self.set_masks()
-        self._addSolidCollider(CollisionBox((.0, .0, .3), .3, .3, .3))
+        self._addSolidCollider(CollisionBox((.0, .0, .5), .3, .3, .5))
         pass
     pass
 
@@ -75,7 +75,7 @@ class EventablePrefab(Prefab, DirectObject):
         pass
     
     def setEvent(self, event):
-        EventMap.update(str(self._id), event)
+        EventMap.bind(str(self._id), event)
         return
 
     def __del__(self):
@@ -103,7 +103,7 @@ class Holdable(EventablePrefab):
             self._load_mopath()
             pass
         self.find("**/+CollisionNode").setTag("interactable_id", str(self._id))
-        self.setEvent(events.NoticeText("prendi", onClick=events.ActionEvent(self.hold)))
+        self.setEvent(events.NoticeText("prendi", onClick=self.hold))
         pass
     
     def _rotateTask(self, task):
@@ -162,8 +162,8 @@ class CoffeMachine(Prefab):
             self.copyTransform(placeholder)
         self.set_masks()        
         self._addSolidCollider(CollisionBox((.0, -.28, .95), .48, .28, .95))
-        EventMap.update(self.find("**/=interactable_id").getTag("interactable_id"),
-                        events.NoticeText("Compra KAFFEEEEEEEE", onClick=events.ActionEvent(self._dispense_coffe)))
+        EventMap.bind(self.find("**/=interactable_id").getTag("interactable_id"),
+                        events.NoticeText("Compra KAFFEEEEEEEE", onClick=self._dispense_coffe))
         
     def _dispense_coffe(self):
         coffe = Coffe(self.find("**/cup_placeholder"))

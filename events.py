@@ -1,68 +1,59 @@
 # events and interactions utils
 from config import get_globals
+from direct.shobase.DirectObject import DirectObject
 # shouldn't import other modules
 
 
 _Globals = get_globals()
 
-
 class Event:
-    def __init__(self, onClick=None):
-        self._next = None
-        self._onclick = onClick
-
-    def append(self, next):
-        self._next = next
-
-    @property
-    def next(self):
-        return self._next
-
-    @property
-    def onClick(self):
-        return self._onclick
-
-    @property
-    def type(self):
-        return None
     
-    @staticmethod
-    def chainEvents(start_event, *args):
-        last = start_event
-        for event in args:
-            start_event.append(event)
-        return last
-            
-
-class NoticeText(Event):
-    def __init__(self, text, **kwargs):
-        super().__init__(**kwargs)
-        self._text = text
-
-    @property
-    def text(self):
-        return self._text
-
-    @property
-    def type(self):
-        return "Notice"
-
-
-class ActionEvent(Event):
-    def __init__(self, *args):
-        self._actions = args
-
-    @property
-    def type(self):
-        return "Action"
-
-    @property
-    def actions(self):
-        return self._actions
+    def __init__(self, func, *args):
+        self._on_call = func
+        self._args = args
+        self._next = None
+        pass
 
     def __call__(self):
-        for action in self._actions:
-            action()
-            return
+        self._on_call(*self._args)
+        if self._next:
+            self._next()
+        return
+
+    @staticmethod
+    def chainEvents(first, *tail):
+        last = first
+        for ev in tail:
+            last._next = ev
+            last = ev
+        return first
+    pass
+
+class GUIEvent(Event):
+    def __init__(self, state, *args):
+        Event.__init__(self, _Globals.gui_fsm, *args)
+        self._state = state
         pass
     pass
+
+class NoticeEvent(GUIEvent):
+    def __init__(self, text):
+        GUIEvent.__init__(self, "Notice", text)
+        pass
+    pass
+
+class ClickableEvent(Event, DirectObject):
+    def __init__(self, func, *args, onClick=None):
+        Event.__init__(self, func, *args)
+        self._on_click = lambda: print("missing_function")
+        if onClick:
+            self._on_click = onClick
+            pass
+        pass
+    def __call__(self):
+        self.accept("mouse1", self._on_click)
+        Event.__call__(self)
+        pass
+    pass
+    
+    

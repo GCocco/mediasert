@@ -21,8 +21,8 @@ class Direction(IntEnum):
     pass
 
 class BitMasks:
-    Solid = BitMask32(5)
-    Interactable = BitMask32(8)
+    Solid = BitMask32(0x11)
+    Interactable = BitMask32(0x1100)
     Empty = BitMask32.allOff()
 
     @staticmethod
@@ -34,7 +34,7 @@ class EventMap:
     _EVENT_MAP = {"closed_door": events.NoticeText("Apri", onClick=events.NoticeText("La porta è chiusa"))}
 
     @staticmethod
-    def update(event_id, event):
+    def bind(event_id, event):
         EventMap._EVENT_MAP[event_id] = event
         return
 
