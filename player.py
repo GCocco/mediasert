@@ -29,29 +29,31 @@ class _InteractHandler(DirectObject):
     def interactTask(self, task):
         if self._queue.getNumEntries():
             self._queue.sortEntries()
-            self(self._queue.getEntry(0).getIntoNode())
+            self(self._queue.getEntry(0).getIntoNode().getTag("interactable_id"))
             return task.again
-        self(None)
+        else:
+            self(None)
+            return task.again
         return task.again
 
     def onHover(self):
-        if self._last_collided is not None:
-            try:
-                EventMap.startEvent(self._last_collided.getTag("interactable_id"))
-            except KeyError:
-                pass
+        try:
+            print("hovering", self._last_collided)
+            EventMap.hover(self._last_collided)
+        except KeyError:
+            print("No event for id", self._last_collided)
             return
         return
 
     def onClick(self):
         if self._last_collided is not None:
-            EventMap.clickEvent(self._last_collided.getTag("interactable_id"))
+            EventMap.click(self._last_collided)
             return True
         return False
     
     def onHoverLeave(self):
         if self._last_collided:
-            _Globals.gui_fsm.close() # anbdrebbe cambiato, accesso diretto alla gui (meglio passare per events)
+            EventMap.hoverLeave(self._last_collided)
             return
         return
 

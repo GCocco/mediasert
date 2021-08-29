@@ -33,7 +33,7 @@ class _GUI_FSM(FSM):
         pass
 
     def __call__(self, event):
-        self.request(event.type, event)
+        self.request(event.event_type, event)
         return
 
     def enterNotice(self, event):
@@ -52,7 +52,7 @@ class _GUI_FSM(FSM):
         self.request("Empty")
         return
 
-    def enterEmpty(self):
+    def enterEmpty(self, event):
         pass
 
     def exitEmpty(self):

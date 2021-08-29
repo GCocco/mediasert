@@ -31,7 +31,8 @@ class BitMasks:
 
 
 class EventMap:
-    _EVENT_MAP = {"closed_door": events.NoticeText("Apri", onClick=events.NoticeText("La porta è chiusa"))}
+    _EVENT_MAP = {"closed_door": events.CollisionEvent(events.NoticeEvent("Apri"),
+                                                       on_click=events.NoticeEvent("La porta è chiusa"))}
 
     @staticmethod
     def bind(event_id, event):
@@ -48,15 +49,18 @@ class EventMap:
         return
     
     @staticmethod
-    def startEvent(event_id):
-        if event_id in EventMap._EVENT_MAP:
-            _Globals.gui_fsm(EventMap._EVENT_MAP[event_id])
-            return True
-        return False
+    def hover(event_id):
+        EventMap._EVENT_MAP[event_id].on_hover()
+        return
     
     @staticmethod
-    def clickEvent(event_id):
-        _Globals.gui_fsm(EventMap._EVENT_MAP[event_id].onClick)
+    def click(event_id):
+        EventMap._EVENT_MAP[event_id].on_click()
+        return
+    
+    @staticmethod
+    def hoverLeave(event_id):
+        EventMap._EVENT_MAP[event_id].on_leave()
         return
     pass
 

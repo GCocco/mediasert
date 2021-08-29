@@ -88,7 +88,5 @@ class MaleNPC(NPC):
         # _Globals.pusher.addCollider(self._coll_np, self)
         # _Globals.base.cTrav.addCollider(self._coll_np, _Globals.pusher)
 
-        EventMap.bind(str(self._id), events.Event(onClick=lambda: print("ovolollo")))
-        
         pass
     pass

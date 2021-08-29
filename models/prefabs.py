@@ -71,10 +71,11 @@ class EventablePrefab(Prefab, DirectObject):
     def __init__(self, model_path, placeholder=None):
         Prefab.__init__(self, model_path, placeholder=placeholder)
         self._id = EventablePrefab._SEED
+        self.find("**/=mask=interactable").setTag("interactable_id", str(self._id))
         EventablePrefab._SEED += 1
         pass
     
-    def setEvent(self, event):
+    def _set_event(self, event):
         EventMap.bind(str(self._id), event)
         return
 
@@ -102,8 +103,9 @@ class Holdable(EventablePrefab):
         if not self._anim_is_loaded:
             self._load_mopath()
             pass
-        self.find("**/+CollisionNode").setTag("interactable_id", str(self._id))
-        self.setEvent(events.NoticeText("prendi", onClick=self.hold))
+        self.find("**/=mask=interactable").setTag("interactable_id", str(self._id))
+        self._set_event(events.CollisionEvent(events.NoticeEvent("prendi"),
+                                              on_click=events.Event(self.hold)))
         pass
     
     def _rotateTask(self, task):
@@ -149,21 +151,19 @@ class Door_01(Prefab):
     def __init__(self, placeholder=None):
         super().__init__("./models/maps/maps_props/door_01.egg", placeholder=placeholder)
         if placeholder:
-            self.find("**/+CollisionNode").setTag("interactable_id", placeholder.getTag("interactable_id"))
+            self.find("**/+CollisionNode").setTag("interactable_id", "closed_door")
         self.set_masks()
         return
     pass
 
 
-class CoffeMachine(Prefab):
+class CoffeMachine(EventablePrefab):
     def __init__(self, placeholder=None):
-        super().__init__("./models/maps/maps_props/coffe_machine.egg")
-        if placeholder:
-            self.copyTransform(placeholder)
+        super().__init__("./models/maps/maps_props/coffe_machine.egg", placeholder=placeholder)
         self.set_masks()        
         self._addSolidCollider(CollisionBox((.0, -.28, .95), .48, .28, .95))
-        EventMap.bind(self.find("**/=interactable_id").getTag("interactable_id"),
-                        events.NoticeText("Compra KAFFEEEEEEEE", onClick=self._dispense_coffe))
+        self._set_event(events.CollisionEvent(events.NoticeEvent("Compra KAFFEEEEEEEE"),
+                                              on_click=events.Event(self._dispense_coffe)))
         
     def _dispense_coffe(self):
         coffe = Coffe(self.find("**/cup_placeholder"))
