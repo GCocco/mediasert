@@ -46,9 +46,13 @@ class NPC(Actor):
     
     def __init__(self, model, animations):
         super().__init__(model, animations)
-        self._id = NPC._id_seed
+        self._id = "NPC_" + str(NPC._id_seed)
         self._id_seed += 1
-        self._fsm = NpcFSM(self) 
+        self._fsm = NpcFSM(self)
+        pass
+
+    def _interact(self):
+        print(_Globals.player.holded)
 
 class MaleNPC(NPC):
     def __init__(self):
@@ -56,6 +60,8 @@ class MaleNPC(NPC):
                          {"Walk": "./models/actors/male-Walk.egg",
                           "Idle": "./models/actors/male-Idle.egg",
                           "Pain": "./models/actors/male-Pain.egg"})
+
+        
 
         shirt_material = Material()
         shirt_material.setDiffuse(LColor(random(), random(), random(), 1.0))
@@ -83,10 +89,14 @@ class MaleNPC(NPC):
         self._coll_np.node().addSolid(CollisionBox((.0, .0, .9), .2, .2, .9))
         self._coll_np.node().setIntoCollideMask(BitMasks.Solid | BitMasks.Interactable)
         self._coll_np.node().setFromCollideMask(BitMasks.Empty)
-        self._coll_np.setTag("interactable_id", str(self._id))
+        self._coll_np.setTag("interactable_id", self._id)
         self._coll_np.show()
         # _Globals.pusher.addCollider(self._coll_np, self)
         # _Globals.base.cTrav.addCollider(self._coll_np, _Globals.pusher)
+
+        EventMap.bind(self._id, events.CollisionEvent(events.NoticeEvent("gigi"), on_click=events.Event(self._interact)))
+
+        
 
         pass
     pass

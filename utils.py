@@ -50,17 +50,29 @@ class EventMap:
     
     @staticmethod
     def hover(event_id):
-        EventMap._EVENT_MAP[event_id].on_hover()
+        try:
+            EventMap._EVENT_MAP[event_id].on_hover()
+            pass
+        except KeyError:
+            pass
         return
     
     @staticmethod
     def click(event_id):
-        EventMap._EVENT_MAP[event_id].on_click()
+        try:
+            EventMap._EVENT_MAP[event_id].on_click()
+            pass
+        except KeyError:
+            pass
         return
     
     @staticmethod
     def hoverLeave(event_id):
-        EventMap._EVENT_MAP[event_id].on_leave()
+        try:
+            EventMap._EVENT_MAP[event_id].on_leave()
+            pass
+        except:
+            pass
         return
     pass
 
