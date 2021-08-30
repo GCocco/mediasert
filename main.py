@@ -9,21 +9,19 @@ import gui
 from player import FPController
 from maps import Map_01
 
+
 class Mediasert(ShowBase):
 
     def __init__(self):
         super().__init__()
+        self.render.setScale(70)
         config.init_config(self)
         self.disableMouse()
         
         self.accept("escape", exit)
-
-        def showcolliders():
-            for collider in self.render.findAllMatches("**/+CollisionNode"):
-                collider.getParent().show()
-
-        self.accept("c", showcolliders)
         pass
+    
+    pass
 
 
 
@@ -40,5 +38,5 @@ if __name__ == "__main__":
     
     ms.render.setLight(light)
     
-    map = Map_01(ms)
+    map = Map_01()
     ms.run()

@@ -20,13 +20,22 @@ def init_gui(gui_fsm):
 def init_player(controller):
     _Globals.player = controller
     return
-    
+
+def init_world(world):
+    _Globals.ai = world
+    return
+
+def set_map(_map):
+    _Globals.map = _map
+    return
+
 class _Globals:
     base = None
     player = None
     loader = None
     render = None
     gui_fsm = None
+    world = None
 
 def get_globals():
     return _Globals

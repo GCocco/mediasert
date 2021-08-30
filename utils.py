@@ -3,7 +3,7 @@ from enum import IntEnum
 from panda3d.core import BitMask32, NodePath
 from direct.showbase.DirectObject import DirectObject
 import events
-from config import get_globals
+from config import get_globals, init_world
 
 _Globals = get_globals()
 
@@ -20,15 +20,34 @@ class Direction(IntEnum):
     Undefined = 0
     pass
 
+
 class BitMasks:
     Solid = BitMask32(0x11)
     Interactable = BitMask32(0x1100)
     Empty = BitMask32.allOff()
+    pass
 
-    @staticmethod
-    def fromInt(num):
-        return BitMask32(num)
 
+class NavMesh_World(DirectObject):
+    from panda3d import ai
+
+    def __init__(self, navmesh):
+        self._navmesh = navmesh
+        self._world = ai.World(_Globals.render)
+        inti_world(self)
+        pass
+
+    def add_npc(npc, mass=1.0, movt_force = 1.0, max_force=1.0):
+        ai_char = ai.AICharacter(npc.getID, npc, mass, movt_force)
+        self._world.addAiChar(ai_char)
+        ai_char.getAibehaviors().initPathFind(self._navMesh)
+        return ai_char
+    pass
+
+
+# +----------+
+# |  EVENTS  |
+# +----------+
 
 class EventMap:
     _EVENT_MAP = {"closed_door": events.CollisionEvent(events.NoticeEvent("Apri"),
@@ -75,5 +94,3 @@ class EventMap:
             pass
         return
     pass
-
-
