@@ -13,8 +13,7 @@ class EmptyMap(DirectObject, NodePath):
     
     def __init__(self, model_path, navmesh_path, name="map"):
         NodePath.__init__(self, name)
-        self._nav_mesh = navmesh_path
-        self._aiworld = NavMesh_World(self._nav_mesh)
+        # self._aiworld = NavMesh_World(navmesh_path)
         self.attachNewNode(_Globals.loader.loadModel(model_path).node())
         self.reparentTo(_Globals.render)
         pass
@@ -30,12 +29,7 @@ class EmptyMap(DirectObject, NodePath):
             placeholder.removeNode()
             print("found prefab", placeholder.getTag("prefab"))
             pass
-        return
-
-    @property
-    def navMesh(self):
-        return self._nav_mesh
-    
+        return    
     pass
 
 

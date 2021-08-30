@@ -93,14 +93,15 @@ class MaleNPC(NPC):
         self._coll_np.node().setFromCollideMask(BitMasks.Empty)
         self._coll_np.setTag("interactable_id", self._id)
         self._coll_np.show()
-
+        print("actor-1")
         EventMap.bind(self._id, events.CollisionEvent(events.NoticeEvent("gigi"), on_click=events.Event(self._interact)))
 
 
         # ai setup
-        self._behavior = _Globals.world.add_npc(self)
-        self._behavior.getAiBehaviors().pathFindTo(_Globals.player)
-
+        # self._ai_behav = _Globals.world.add_npc(self).getAiBehaviors()
+        print("actor-2")
+        # self._ai_behav.seek(_Globals.player)
+        print("actor-3")
         pass
     
     
