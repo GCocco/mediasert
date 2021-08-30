@@ -36,7 +36,6 @@ class NpcFSM(FSM):
     pass
 
 
-
 class NPC(Actor):
     _id_seed = 0
 
@@ -53,6 +52,8 @@ class NPC(Actor):
 
     def _interact(self):
         print(_Globals.player.holded)
+        pass
+    pass
 
 class MaleNPC(NPC):
     def __init__(self):

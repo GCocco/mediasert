@@ -1,6 +1,7 @@
 # stuff
 from enum import IntEnum
 from panda3d.core import BitMask32, NodePath
+from panda3d import ai
 from direct.showbase.DirectObject import DirectObject
 import events
 from config import get_globals, init_world
@@ -29,12 +30,11 @@ class BitMasks:
 
 
 class NavMesh_World(DirectObject):
-    from panda3d import ai
 
     def __init__(self, navmesh):
         self._navmesh = navmesh
-        self._world = ai.World(_Globals.render)
-        inti_world(self)
+        self._world = ai.AIWorld(_Globals.render)
+        init_world(self)
         pass
 
     def add_npc(npc, mass=1.0, movt_force = 1.0, max_force=1.0):

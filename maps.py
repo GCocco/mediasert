@@ -3,7 +3,7 @@
 from panda3d.core import NodePath, BitMask32
 from direct.showbase.DirectObject import DirectObject
 from models.prefabs import PREFAB_MAP
-from utils import BitMasks
+from utils import BitMasks, NavMesh_World
 from panda3d.core import AmbientLight
 from config import get_globals, set_map
 
@@ -16,6 +16,7 @@ class EmptyMap(DirectObject, NodePath):
         self.attachNewNode(_Globals.loader.loadModel(model_path).node())
         self.reparentTo(_Globals.render)
         self._nav_mesh = navmesh_path
+        self._aiworld = NavMesh_World(self._nav_mesh)
         pass
     
     def setMask(self):
