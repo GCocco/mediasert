@@ -22,7 +22,8 @@ def init_player(controller):
     return
 
 def init_world(world):
-    _Globals.ai = world
+    _Globals.world = world
+    print("AAAAAAAAAAAAAAAA")
     return
 
 def set_map(_map):

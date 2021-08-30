@@ -35,13 +35,19 @@ class NavMesh_World(DirectObject):
         self._navmesh = navmesh
         self._world = ai.AIWorld(_Globals.render)
         init_world(self)
+        self.addTask(self._update_task, "update")
         pass
 
-    def add_npc(npc, mass=1.0, movt_force = 1.0, max_force=1.0):
-        ai_char = ai.AICharacter(npc.getID, npc, mass, movt_force)
+    def add_npc(self, npc, mass=1.0, movt_force=1.0, max_force=1.0):
+        ai_char = ai.AICharacter(npc.getID, npc, mass, movt_force, max_force)
         self._world.addAiChar(ai_char)
-        ai_char.getAibehaviors().initPathFind(self._navMesh)
+        ai_char.getAiBehaviors().initPathFind(self._navmesh)
         return ai_char
+
+    def _update_task(self, task):
+        self._world.update()
+        return task.cont
+    
     pass
 
 

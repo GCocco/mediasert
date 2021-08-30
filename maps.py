@@ -13,10 +13,10 @@ class EmptyMap(DirectObject, NodePath):
     
     def __init__(self, model_path, navmesh_path, name="map"):
         NodePath.__init__(self, name)
-        self.attachNewNode(_Globals.loader.loadModel(model_path).node())
-        self.reparentTo(_Globals.render)
         self._nav_mesh = navmesh_path
         self._aiworld = NavMesh_World(self._nav_mesh)
+        self.attachNewNode(_Globals.loader.loadModel(model_path).node())
+        self.reparentTo(_Globals.render)
         pass
     
     def setMask(self):

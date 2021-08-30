@@ -21,7 +21,7 @@ ambient_default = LColor(.0, .0, .0, 1.0)
 
 class NpcFSM(FSM):
     def __init__(self, npc):
-        FSM.__init__(self, str(npc.getID()))
+        FSM.__init__(self, str(npc.getID))
         self._npc = npc
         pass
 
@@ -39,6 +39,7 @@ class NpcFSM(FSM):
 class NPC(Actor):
     _id_seed = 0
 
+    @property
     def getID(self):
         return self._id
     
@@ -92,12 +93,13 @@ class MaleNPC(NPC):
         self._coll_np.node().setFromCollideMask(BitMasks.Empty)
         self._coll_np.setTag("interactable_id", self._id)
         self._coll_np.show()
-        # _Globals.pusher.addCollider(self._coll_np, self)
-        # _Globals.base.cTrav.addCollider(self._coll_np, _Globals.pusher)
 
         EventMap.bind(self._id, events.CollisionEvent(events.NoticeEvent("gigi"), on_click=events.Event(self._interact)))
 
-        
+
+        # ai setup
+        self._behavior = _Globals.world.add_npc(self)
+        self._behavior.getAiBehaviors().pathFindTo(_Globals.player)
 
         pass
     

@@ -31,6 +31,7 @@ if __name__ == "__main__":
     light = ms.camera.attachNewNode(DirectionalLight("light"))
     from actors import MaleNPC
 
+    mp = Map_01()
     npc = MaleNPC()
     npc.setY(-4)
     npc.reparentTo(ms.render)
@@ -38,5 +39,4 @@ if __name__ == "__main__":
     
     ms.render.setLight(light)
     
-    map = Map_01()
     ms.run()
