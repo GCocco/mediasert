@@ -10,6 +10,7 @@ from player import FPController
 from maps import Map_01
 from panda3d import ai
 
+
 class Mediasert(ShowBase):
 
     def __init__(self):
@@ -17,7 +18,6 @@ class Mediasert(ShowBase):
 
         self.AIWorld = ai.AIWorld(self.render)  # AI
         self.addTask(self._aitask, "aiTask")  # AI
-
         
         self.render.setScale(70)
         config.init_config(self)
@@ -57,7 +57,11 @@ if __name__ == "__main__":
     ms.AIWorld.addAiChar(npc_AI)
 
     npc_behav = npc_AI.getAiBehaviors()
-    npc_behav.flee(me)
+
+
+    npc_behav.initPathFind("./models/maps/lvl_01.egg")
+    
+    npc_behav.pursue(me)
     
     ms.render.setLight(light)
     
