@@ -41,6 +41,12 @@ pprint(colonne)
 print("Ignora il primo risultato")
 print(len(colonne))
 p = -100
+count = 0
 for x in colonne:
-    print(p-x)
+    diff = p-x
+    print(diff)
+    if abs(diff) < 0.00000015:  # controllo errore macchina
+        count += 1
     p = x
+
+print(count)
