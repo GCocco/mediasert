@@ -9,23 +9,19 @@ fp = None
 if ENABLELOG:
     fp = open("./.log.txt", "w")
 
-def log(*args):
+def log(arg):
     if ENABLELOG:
-        fp.write(str(args) + "\n")
+        fp.write(str(arg)  + "\n")
 
 
 class Vertex:
-    TOLERANCE_X = .000000125
-    TOLERANCE_Y = .000000125
+    TOLERANCE_X = .00000125
+    TOLERANCE_Y = .00000125
     TOLERANCE_Z = .000001
     
     coords_x = set()
     coords_y = set()
     coords_z = set()
-
-
-    ordered_coors_x = list()
-    
     
     map_X = dict()
     
@@ -114,6 +110,10 @@ class Vertex:
     def z(self):
         return self._z
 
+    @property
+    def next(self):
+        return self._next
+
     def __repr__(self):
         return f"Vector({self._x},{self._y},{self._z})"
 
@@ -122,27 +122,19 @@ class Vertex:
             return self._y < other._y
         return False
 
-    @staticmethod
-    def find(x_val, y_val):
-        x = Vertex.getCloserX(x_val)[0]
-        y = Vertex.getCloserY(y_val)[0]
 
-        count = 0
-        head = Vertex.map_X[x]
-        while head:
-            if head._y == y:
-                break
-            else:
-                head = head._next
-                count += 1
-            pass
-        return Vertex.ordered_coors_x.index(x), count
-        
-        
+    @staticmethod
+    def reset():
+        Vertex.map_X = dict()
+        Vertex.coords_x = set()
+        Vertex.coords_y = set()
+        Vertex.coords_Z = set()
+        return
+    
     @staticmethod
     def getCloserX(val):
-        dist = 100  # miglior distanza ottenuta:
-        closer = -100  # da quale vertice
+        dist = 100
+        closer = -100
         for coord_x in Vertex.coords_x:
             distance = abs(val-coord_x)
             if distance < dist:
@@ -182,42 +174,11 @@ class Vertex:
     pass
 
 
-
-geom = egg.loadEggFile("./mesh_full.egg").getChild(0).getGeom(0)
 from pprint import pprint
-primitive = geom.getPrimitive(0)
-vdata = geom.getVertexData()
 
-print("expected rows/lines: ", int(sqrt(vdata.getNumRows())))
-reader = GeomVertexReader(vdata, "vertex")
 
-reader.setRow(0)
-while not reader.isAtEnd():
-    Vertex(reader.getData3())
-    pass
 
-for x in Vertex.ordered_coors_x:
-    log(x)
-
-print("x: ", len(Vertex.coords_x))
-print("y: ", len(Vertex.coords_y))
-print("z: ", len(Vertex.coords_z))
-
-print("#################")
-
-if False:
-    for x in Vertex.map_X:
-        pprint(Vertex.map_X[x].as_list())
-
-    for x in Vertex.map_X:
-        print(len(Vertex.map_X[x].as_list()))
-    pass
-
-pprint(Vertex.ordered_coors_x)
-# print(primitive)
-tri_coords = None
-
-def vertex_min(v1, v2):
+def top_left(v1, v2):
     if v1[1] < v2[1]:
         return v1
     elif v1[1] == v2[1]:
@@ -225,29 +186,126 @@ def vertex_min(v1, v2):
             return v1
     return v2
 
+def index_top_left3(v1, v2, v3):
+    return (v1, v2, v3).index(top_left(top_left(v1, v2), v3))
 
-def index_vertex_min3(v1, v2, v3):
-    return (v1, v2, v3).index(vertex_min(vertex_min(v1, v2), v3))
 
-for g in range(geom.getNumPrimitives()):
-    prim = geom.getPrimitive(g)
-    prim = prim.decompose()
-    print("AAAAAA")
-    for p in range(prim.getNumPrimitives()):
-        s = prim.getPrimitiveStart(p)
-        e = prim.getPrimitiveEnd(p)
-        # print(s, e)
-        # print(prim)
-        tri_coords = []
-        for i in range(s, e):
-            vi = prim.getVertex(i)
-            reader.setRow(vi)
-            v = reader.getData3()
-            tri_coords.append(Vertex.find(v.getX(), v.getY()))
-        log(tri_coords)
-        log("min:", index_vertex_min3(*tri_coords))
+def top_right(v1, v2):
+    if v1[0] >= v2[0] and v1[1] < v2[1]:
+        return v1
+    return v2
+
+def index_top_right3(v1, v2, v3):
+    return (v1, v2, v3).index(top_right(top_right(v1, v2), v3))
+
+
+class NavMesh:
+    def __init__(self, mod_path, coll_path):
+        self.grid_geom = egg.loadEggFile(mod_path).getChild(0).getGeom(0)
+        vdata = self.grid_geom.getVertexData()
+        
+        reader = GeomVertexReader(vdata, "vertex")
+        reader.setRow(0)
+        
+        while not reader.isAtEnd():
+            Vertex(reader.getData3())
+            pass
+
+        print("Parsed ", vdata.getNumRows(), "vertices")
+        print("found ", len(Vertex.coords_x), " x levels")
+        print("found ", len(Vertex.coords_y), " y levels")
+        print("found ", len(Vertex.coords_z), " z levels")
+        
+        self._grid_x_coords = sorted(Vertex.coords_x)
+        self._grid_y_coords = sorted(Vertex.coords_y)
+        self._map_X = Vertex.map_X
+
+
+        self._grid_vertices = []
+        
+        for g in range(self.grid_geom.getNumPrimitives()):  # TODO: questi cicli possono essere sostituiti da uno sugli elementi in self._map_X
+            prim = self.grid_geom.getPrimitive(g).decompose() # (credo)
+
+            for p in range(prim.getNumPrimitives()):
+                s = prim.getPrimitiveStart(p)
+                e = prim.getPrimitiveEnd(p)
+                tri_coords = []
+                for i in range(s, e):
+                    reader.setRow(prim.getVertex(i))
+                    tri_coords.append(self.find(reader.getData3()))
+                tl = index_top_left3(*tri_coords)
+                if tl != index_top_right3(*tri_coords):
+                    self._grid_vertices.append(tri_coords[tl])
+                    pass
+                pass
+            pass
+        for gv in self._grid_vertices:
+            log(gv)
+
+        coll_geom = egg.loadEggFile(coll_path).getChild(0).getGeom(0)
+        vdata = coll_geom.getVertexData()
+        reader = GeomVertexReader(vdata, "vertex")
+        reader.setRow(0)
+        for g in range(coll_geom.getNumPrimitives()):
+            prim = coll_geom.getPrimitive(g).decompose()
+
+            for p in range(prim.getNumPrimitives()):
+                s = prim.getPrimitiveStart(p)
+                e = prim.getPrimitiveEnd(p)
+                tri_coords = []
+                for i in range(s, e):
+                    reader.setRow(prim.getVertex(i))
+                    tri_coords.append(self.find(reader.getData3()))
+                tl = index_top_left3(*tri_coords)
+                if tl != index_top_right3(*tri_coords):
+                    self._grid_vertices.remove(tri_coords[tl])
+                    pass
+                pass
+            pass
+        log("AYYLMAO")
+        for gv in self._grid_vertices:
+            log(gv)        
+
+        
+        pass
+
+
+    def getCloser(self, x_val, y_val):
+        closer_x = self._grid_x_coords[0]
+        closer_y = self._grid_y_coords[0]
+        diff = 1000
+        for x in self._grid_x_coords:
+            if abs(x-x_val) < diff:
+                closer_x = x
+                diff = abs(x-x_val)
+                pass
+            pass
+        diff = 1000
+        for y in self._grid_y_coords:
+            if abs(y-y_val) < diff:
+                closer_y = y
+                diff = abs(y-y_val)
+                pass
+            pass
+        return closer_x, closer_y
         
 
+    def find(self, vert):
+        x, y = self.getCloser(vert.getX(), vert.getY())
+        
+        count = 0
+        head = self._map_X[x]
+        while head:
+            if head._y == y:
+                break
+            else:
+                head = head.next
+                count += 1
+            pass
+        return self._grid_x_coords.index(x), count
+
+
+    
 
 
 
@@ -256,6 +314,6 @@ for g in range(geom.getNumPrimitives()):
 
 
 
+if __name__ == "__main__":
+    nv = NavMesh("./mesh_full.egg", "./mesh_full.egg")
 
-if ENABLELOG:
-    fp.close()
