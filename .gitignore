@@ -130,3 +130,6 @@ dmypy.json
 .pyre/
 utils.py~
 tools/.log.txt
+tools/mesh_coll.egg
+*.c~
+*.out

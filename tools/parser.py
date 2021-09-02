@@ -222,25 +222,16 @@ class NavMesh:
 
 
         self._grid_vertices = []
-        
-        for g in range(self.grid_geom.getNumPrimitives()):  # TODO: questi cicli possono essere sostituiti da uno sugli elementi in self._map_X
-            prim = self.grid_geom.getPrimitive(g).decompose() # (credo)
 
-            for p in range(prim.getNumPrimitives()):
-                s = prim.getPrimitiveStart(p)
-                e = prim.getPrimitiveEnd(p)
-                tri_coords = []
-                for i in range(s, e):
-                    reader.setRow(prim.getVertex(i))
-                    tri_coords.append(self.find(reader.getData3()))
-                tl = index_top_left3(*tri_coords)
-                if tl != index_top_right3(*tri_coords):
-                    self._grid_vertices.append(tri_coords[tl])
-                    pass
-                pass
-            pass
-        for gv in self._grid_vertices:
-            log(gv)
+        counter = 0
+        for r in self._grid_x_coords:  # l'ultima iterazione sulle righe e sulle colonne non dovrebbe essere necessaria
+            head = self._map_X[r]
+            counter_x = 0
+            while head:
+                self._grid_vertices.append((counter_x, counter))
+                counter_x += 1
+                head = head.next
+            counter += 1
 
         coll_geom = egg.loadEggFile(coll_path).getChild(0).getGeom(0)
         vdata = coll_geom.getVertexData()
@@ -258,11 +249,15 @@ class NavMesh:
                     tri_coords.append(self.find(reader.getData3()))
                 tl = index_top_left3(*tri_coords)
                 if tl != index_top_right3(*tri_coords):
-                    self._grid_vertices.remove(tri_coords[tl])
+                    try:
+                        self._grid_vertices.remove(tri_coords[tl])
+                        pass
+                    except ValueError:
+                        print(tri_coords[tl])
+                        pass
                     pass
                 pass
             pass
-        log("AYYLMAO")
         for gv in self._grid_vertices:
             log(gv)        
 
@@ -315,5 +310,5 @@ class NavMesh:
 
 
 if __name__ == "__main__":
-    nv = NavMesh("./mesh_full.egg", "./mesh_full.egg")
+    nv = NavMesh("./mesh_full.egg", "./mesh_coll.egg")
 
