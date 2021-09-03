@@ -175,19 +175,8 @@ class Vertex:
     pass
 
 
-class GridNode:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.next = None
-        pass
-    pass
-
-
-
 
 from pprint import pprint
-
 
 
 def top_left(v1, v2):
@@ -270,17 +259,14 @@ class NavMesh:
 
 
         # stampa di controllo
-        if ENABLELOG:
-            for i in range(len(self._map_X[self._grid_x_coords[0]].as_list())):
-                for j in range(len(self._grid_x_coords)):
-                    if (i, j) in self._grid_vertices:
-                        print("#", end="")
-                    else:
-                        print(" ", end="")
-                    print("")
-                pass
+        for i in range(len(self._map_X[self._grid_x_coords[0]].as_list())):
+            for j in range(len(self._grid_x_coords)):
+                if (i, j) in self._grid_vertices:
+                    print("#", end="")
+                else:
+                    print(" ", end="")
+            print("")
             pass
-        
 
         self._abc_map = dict()
 
@@ -292,7 +278,7 @@ class NavMesh:
             for j in range(len(self._grid_x_coords)-1):
                 if (i, j) in self._grid_vertices:
                     if state == "start":
-                        self._abc_map[self._grid_x_coords[i]].append((None, j))
+                        self._abc_map[self._grid_x_coords[i]].append(j)
                         state = "obs_start"
                         last = j
                     elif state == "obs_start":
@@ -310,18 +296,40 @@ class NavMesh:
                     elif state == "obs_close":
                         pass
                     pass
-            self._abc_map[self._grid_x_coords[i]].append((last, None))
-            
+            self._abc_map[self._grid_x_coords[i]].append(last)
 
-        self.dump()
-        
+        # pprint(self._abc_map)
+        self.dumpNavMesh()
         pass
 
-    def dump(self, filename="navmesh.json"):  # da cambiare in formato più performante (modulo c?), aggiungere coordinate y
+    def dumpNavMesh(self, filename="mynavmesh.csv"):
         with open(filename, "w") as fp:
-            dump([self._grid_y_coords, self._abc_map], fp, indent = 1)
+            fp.write(str(len(self._grid_x_coords)))
+            fp.write(",")
+            fp.write(str(len(self._grid_y_coords)))
+            fp.write("\n")
+            for x in self._grid_x_coords:
+                fp.write(str(x))
+                fp.write(",")
+            fp.write("\n")
+            for y in self._grid_y_coords:
+                fp.write(str(y))
+                fp.write(",")
+            fp.write("\n")
+            for x in self._abc_map:
+                num = len(self._abc_map[x]) - 2
+                fp.write(str(self._abc_map[x][0]))
+                fp.write(",")
+                for i in range(1, num):
+                    fp.write(str(self._abc_map[x][i][0]))
+                    pf.write(",")
+                    fp.write(str(self._abc_map[x][i][1]))
+                    fp.write(",")
+                fp.write(str(self._abc_map[x][num + 1]))
+                fp.write("\n")
+                pass
+            pass
         return
-        
 
 
     def getCloser(self, x_val, y_val):
@@ -357,14 +365,7 @@ class NavMesh:
                 count += 1
             pass
         return self._grid_x_coords.index(x), count
-
-
-    
-
-
-
-
-
+    pass
 
 
 

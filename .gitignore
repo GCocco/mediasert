@@ -134,3 +134,4 @@ tools/mesh_coll.egg
 *.c~
 *.out
 tools/navmesh.json
+tools/mynavmesh.csv
