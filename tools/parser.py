@@ -322,7 +322,7 @@ class NavMesh:
                 fp.write(",")
                 for i in range(1, num):
                     fp.write(str(self._abc_map[x][i][0]))
-                    pf.write(",")
+                    fp.write(",")
                     fp.write(str(self._abc_map[x][i][1]))
                     fp.write(",")
                 fp.write(str(self._abc_map[x][num + 1]))
