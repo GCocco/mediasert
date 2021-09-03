@@ -1,19 +1,7 @@
 from panda3d import egg
 from panda3d.core import Filename, GeomVertexReader, Vec3
 from math import sqrt
-from pprint import pprint
 from json import dump
-
-ENABLELOG = True
-
-fp = None
-if ENABLELOG:
-    fp = open("./.log.txt", "w")
-
-def log(arg):
-    if ENABLELOG:
-        fp.write(str(arg)  + "\n")
-
 
 class Vertex:
     TOLERANCE_X = .00000125
@@ -257,8 +245,7 @@ class NavMesh:
                 pass
             pass
 
-
-        # stampa di controllo
+        print("preview:")
         for i in range(len(self._map_X[self._grid_x_coords[0]].as_list())):
             for j in range(len(self._grid_x_coords)):
                 if (i, j) in self._grid_vertices:
@@ -267,6 +254,7 @@ class NavMesh:
                     print(" ", end="")
             print("")
             pass
+
 
         self._abc_map = dict()
 
@@ -297,8 +285,8 @@ class NavMesh:
                         pass
                     pass
             self._abc_map[self._grid_x_coords[i]].append(last)
+            pass
 
-        # pprint(self._abc_map)
         self.dumpNavMesh()
         pass
 
@@ -318,9 +306,10 @@ class NavMesh:
             fp.write("\n")
             for x in self._abc_map:
                 num = len(self._abc_map[x]) - 2
+                fp.write(str(num) + ",")
                 fp.write(str(self._abc_map[x][0]))
                 fp.write(",")
-                for i in range(1, num):
+                for i in range(1, num + 1):
                     fp.write(str(self._abc_map[x][i][0]))
                     fp.write(",")
                     fp.write(str(self._abc_map[x][i][1]))
