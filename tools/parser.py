@@ -2,6 +2,7 @@ from panda3d import egg
 from panda3d.core import Filename, GeomVertexReader, Vec3
 from math import sqrt
 from pprint import pprint
+from json import dump
 
 ENABLELOG = True
 
@@ -174,6 +175,17 @@ class Vertex:
     pass
 
 
+class GridNode:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.next = None
+        pass
+    pass
+
+
+
+
 from pprint import pprint
 
 
@@ -248,21 +260,68 @@ class NavMesh:
                     reader.setRow(prim.getVertex(i))
                     tri_coords.append(self.find(reader.getData3()))
                 tl = index_top_left3(*tri_coords)
-                if tl != index_top_right3(*tri_coords):
-                    try:
-                        self._grid_vertices.remove(tri_coords[tl])
-                        pass
-                    except ValueError:
-                        print(tri_coords[tl])
-                        pass
+                try:
+                    self._grid_vertices.remove(tri_coords[tl])
+                    pass
+                except ValueError:
                     pass
                 pass
             pass
-        for gv in self._grid_vertices:
-            log(gv)        
 
+
+        # stampa di controllo
+        if ENABLELOG:
+            for i in range(len(self._map_X[self._grid_x_coords[0]].as_list())):
+                for j in range(len(self._grid_x_coords)):
+                    if (i, j) in self._grid_vertices:
+                        print("#", end="")
+                    else:
+                        print(" ", end="")
+                    print("")
+                pass
+            pass
+        
+
+        self._abc_map = dict()
+
+        for i in range(len(self._map_X[self._grid_x_coords[0]].as_list())):
+            self._abc_map[self._grid_x_coords[i]] = []
+            
+            last = -100
+            state = "start"
+            for j in range(len(self._grid_x_coords)-1):
+                if (i, j) in self._grid_vertices:
+                    if state == "start":
+                        self._abc_map[self._grid_x_coords[i]].append((None, j))
+                        state = "obs_start"
+                        last = j
+                    elif state == "obs_start":
+                        last = j
+                    elif state == "obs_close":
+                        self._abc_map[self._grid_x_coords[i]].append((last, j))
+                        state = "obs_start"
+                        last = j
+
+                else:
+                    if state == "start":
+                        pass
+                    elif state == "obs_start":
+                        state = "obs_close"
+                    elif state == "obs_close":
+                        pass
+                    pass
+            self._abc_map[self._grid_x_coords[i]].append((last, None))
+            
+
+        self.dump()
         
         pass
+
+    def dump(self, filename="navmesh.json"):  # da cambiare in formato più performante (modulo c?), aggiungere coordinate y
+        with open(filename, "w") as fp:
+            dump([self._grid_y_coords, self._abc_map], fp, indent = 1)
+        return
+        
 
 
     def getCloser(self, x_val, y_val):
