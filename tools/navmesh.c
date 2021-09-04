@@ -1,25 +1,19 @@
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
 #include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <limits.h>
-#include <assert.h>
 #include <stdlib.h>
 
+int count = 0;
 
 typedef struct{
   int coll_start;
   int coll_end;
   struct y_obstacle* next;
-}y_obstacle;   //ok
+}y_obstacle;
 
 typedef struct {
   int start;
   y_obstacle* obstacles;
   int end;
-} abc_y;      //
+} abc_y;
 
 typedef struct {
   int x_lines;
@@ -29,10 +23,25 @@ typedef struct {
   abc_y* boundings;
 } nav_mesh;
 
+nav_mesh ** navmesh_map = NULL;
+int navmesh_counter = 0;
+
+int new_navmesh(){  
+  if (navmesh_counter==0){
+    navmesh_map = (nav_mesh**) calloc(1, sizeof(nav_mesh*));
+  }
+  else{
+    navmesh_map = (nav_mesh**) realloc(navmesh_map, (navmesh_counter+1) * sizeof(nav_mesh*));
+  }
+  navmesh_map[navmesh_counter] = (nav_mesh*) malloc(sizeof(nav_mesh));
+  return (++navmesh_counter);
+}
+
 y_obstacle* append_obstacle(y_obstacle* obs, int start, int end){
   y_obstacle* new_node = NULL;
-
+  
   new_node = (y_obstacle*) malloc(sizeof(y_obstacle));
+
   if (new_node == NULL){
     printf("lmao voglio morire");
   }
@@ -57,13 +66,26 @@ y_obstacle* append_obstacle(y_obstacle* obs, int start, int end){
   return obs;
 }
 
-nav_mesh load_from_file(char* filename, nav_mesh* nm){
+int load_from_file(char* filename){
+
+  
   FILE* fp = NULL;
   int dumb1, dumb2, dumb3;
+
+
+  int index = new_navmesh();
+
+
+  nav_mesh* nm = navmesh_map[index-1];
+
+  printf("%s", filename);
+  
   fp = (FILE*) fopen(filename, "r");
   if (fp == NULL){
-    printf("AAAAAAAAAAAAAAAAAAA");
+    return -1;
   }
+
+  printf("AAAAAAAAAAAAAAAAAAAAAAAAAA");
 
   fscanf(fp, "%d, %d\n", &nm->x_lines, &nm->y_lines);
   nm->x_coords = (double*) calloc(nm->x_lines, sizeof(double));
@@ -95,42 +117,33 @@ nav_mesh load_from_file(char* filename, nav_mesh* nm){
     fscanf(fp, "%d\n", &nm->boundings[i].end);
   }
   fclose(fp);
+  return index;
+}
+
+void check(){
+  printf("sembra tutto ok\n");
+  return;
+}
+
+void ayy_lmao(int nm_index){
+  printf("navcount: %d\n", navmesh_counter);
+  printf("mycount: %d\n", nm_index);
+
+  printf("%p\n", navmesh_map);
+  printf("%d, %d\n", navmesh_map[nm_index]->x_lines, navmesh_map[nm_index]->y_lines);
+  return;
 }
 
 
-
-
-void main(){
-  nav_mesh culo;
-  load_from_file("mynavmesh.csv", &culo);
-
-
-  if (0){
-    printf("x lines: %d \ny lines: %d\n", culo.x_lines, culo.y_lines);
-    printf("\nx coordinates: \n");
-    for (int i = 0; i < culo.x_lines; i++){
-      printf("%lf\n", culo.x_coords[i]);
-    }
-  }
-  if (0){
-    printf("\ny coordinates: \n");
-    for(int i = 0; i< culo.y_lines; i++){
-      printf("%lf\n", culo.y_coords[i]);
-    }
-  }
-  if (1){
-    printf("\nboundings:\n");
-    for (int i = 0; i< culo.x_lines; i++){
-
-      
-      printf("%d", culo.boundings[i].start);
-      y_obstacle* head = culo.boundings[i].obstacles;
-      while (head != NULL){
-	printf(" {%d, %d}", head->coll_start, head->coll_end);
-	head = (y_obstacle*)head->next;
-      }
-      printf(" %d\n", culo.boundings[i].end);	
-    }
-  }
+int main(){
+  printf("initializing navmesh statics...\n");
   
+  int ind = load_from_file("./mynavmesh.csv");
+  
+  printf("%d\n", ind);
+
+
+  ayy_lmao(0);
+  
+  return 0;
 }
