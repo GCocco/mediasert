@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 int count = 0;
 
@@ -15,7 +16,7 @@ typedef struct{
 }y_obstacle;
 
 
-y_obstacle* append_obstacle(y_obstacle* obs, int start, int end){
+y_obstacle* __append_obstacle(y_obstacle* obs, int start, int end){
   y_obstacle* new_node = NULL;
   
   new_node = (y_obstacle*) malloc(sizeof(y_obstacle));
@@ -23,30 +24,25 @@ y_obstacle* append_obstacle(y_obstacle* obs, int start, int end){
   if (new_node == NULL){
     exit(-1);
   }
-  
-  new_node->next = NULL;
-  
+  new_node->next = NULL;  
   new_node->coll_start = start;
   new_node->coll_end = end;
-  
 
   if (obs == NULL){
     return new_node;
   }
-
   y_obstacle* head = obs;
-
+  
   while(head->next != NULL){
     head = (y_obstacle*) head->next;
   }
-
   head->next = (struct y_obstacle*) new_node;
   return obs;
 }
 
-void _del_obstacle(y_obstacle* head){
+void __del_obstacle(y_obstacle* head){
   if (head->next!=NULL){
-    _del_obstacle((y_obstacle*)head->next);
+    __del_obstacle((y_obstacle*)head->next);
   }
   free(head);
   return;
@@ -73,7 +69,7 @@ void _del_navmesh(nav_mesh* nm){
   free(nm->y_coords);
   for(int i=0; i<nm->x_lines; i++){
     if (nm->boundings[i].obstacles != NULL){
-      _del_obstacle(nm->boundings[i].obstacles);
+      __del_obstacle(nm->boundings[i].obstacles);
     }
   }
   free(nm->boundings);
@@ -82,11 +78,11 @@ void _del_navmesh(nav_mesh* nm){
   return;
 }
 
-nav_mesh* newNavmesh(){
+nav_mesh* __newNavmesh(){
   nav_mesh* nm = (nav_mesh*) malloc(sizeof(nav_mesh));
 }
 
-void loadFromFile(nav_mesh* nm, char* filename){
+void __loadFromFile(nav_mesh* nm, char* filename){
 
   FILE* fp = NULL;
   int dumb1, dumb2, dumb3;
@@ -94,7 +90,7 @@ void loadFromFile(nav_mesh* nm, char* filename){
   fp = (FILE*) fopen(filename, "r");
   if (fp == NULL){
     printf("Can't open file %s\n", filename);
-    return;
+    exit(-1);
   }
   
   fscanf(fp, "%d, %d\n", &nm->x_lines, &nm->y_lines);
@@ -113,12 +109,18 @@ void loadFromFile(nav_mesh* nm, char* filename){
     fscanf(fp, "%d,", &nm->boundings[i].start);
     for(int j = 0; j<dumb1; j++){
       fscanf(fp, "%d,%d,", &dumb2, &dumb3);
-      nm->boundings[i].obstacles = append_obstacle(nm->boundings[i].obstacles, dumb2, dumb3);
+      nm->boundings[i].obstacles = __append_obstacle(nm->boundings[i].obstacles, dumb2, dumb3);
     }
     fscanf(fp, "%d\n", &nm->boundings[i].end);
   }
   fclose(fp);
   return;
+}
+
+nav_mesh* newNavmesh(char* filename){
+  nav_mesh* nm = __newNavmesh();
+  __loadFromFile(nm, filename);
+  return nm;
 }
 
 void check(nav_mesh* nm){
@@ -147,15 +149,41 @@ Coordinate find(nav_mesh*nm, double x, double y){
   return c;
 }
 
+bool __can_walk(nav_mesh* nm, Coordinate c){
+  if (nm->boundings[c.x].start > c.y || nm->boundings[c.x].end < c.y){
+    return false;
+  }
+  if (nm->boundings[c.x].obstacles == NULL){
+    return true;
+  }
+  y_obstacle* ob = nm->boundings[c.x].obstacles;
+
+  while(ob){
+    if (ob->coll_end > c.y){
+      if (ob->coll_start < c.y){
+	return false;
+      }
+      ob = (y_obstacle*)ob->next;
+    }
+    else{
+      return true;
+    }
+  }
+  return true;
+}
 
 int main(){
   printf("initializing navmesh statics...\n");
   
-  nav_mesh* nm = newNavmesh();
-  loadFromFile(nm, "./mynavmesh.csv");
+  nav_mesh* nm = newNavmesh("./mynavmesh.csv");
   Coordinate c;
   
-  c = find(nm, (double)-10.0, (double)100.0);
+  c = find(nm, (double)-0.0, (double)10.0);
+  if (__can_walk(nm, c)){
+    printf("can_walk\n");
+  }else{
+    printf("can't_walk");
+  }
   
   return 0;
 }

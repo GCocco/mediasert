@@ -4,8 +4,7 @@ navmeshlib = ctypes.cdll.LoadLibrary("./navmesh.so")
 
 class NavMesh:
     def __init__(self, filename):
-        self._pointer = navmeshlib.newNavmesh()
-        navmeshlib.loadFromFile(self._pointer, ctypes.c_char_p(filename.encode("utf-8")))
+        self._pointer = navmeshlib.newNavmesh(ctypes.c_char_p(filename.encode("utf-8")))
         navmeshlib.check(self._pointer)
         pass
 
