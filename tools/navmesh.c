@@ -1,3 +1,4 @@
+#include  <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -9,6 +10,11 @@ typedef struct{
   int y;
 }Coordinate;
 
+
+
+/**
+DEFINIZIONE NAVMESH 
+ **/
 typedef struct{
   int coll_start;
   int coll_end;
@@ -171,6 +177,152 @@ bool __can_walk(nav_mesh* nm, Coordinate c){
   }
   return true;
 }
+
+
+/**
+RICERCA PERCORSO
+**/
+
+
+typedef struct{  // struct for a list/set of nodes
+  Coordinate coord;
+  struct grid_node* next;
+}grid_node;
+
+typedef struct{  // struct for a list of nodes containing the shortest path to self the distance of said path
+  Coordinate coord;
+  float tot_distance;
+  struct path_node* previous;
+  struct path_node* next;
+}path_node;
+
+typedef struct{  // struct for a list of nodes 
+  Coordinate coord;
+  double distance;
+  struct unvisited_node* next;
+}unvisited_node;
+
+
+
+unvisited_node* new_unvisited(Coordinate c, Coordinate end){
+  unvisited_node* un = malloc(sizeof(unvisited_node));
+  un->coord.x = c.x;
+  un->coord.y = c.y;
+  un->next = NULL;
+  un->distance = sqrt(pow((double)c.x - (double)end.x, 2) +
+		      pow((double)c.y - (double)end.y, 2));
+  return un;
+}
+
+
+unvisited_node* append_sorted(unvisited_node* list, unvisited_node* node){
+  unvisited_node* current = NULL;
+  unvisited_node* last = NULL;
+  
+  if (list == NULL){
+    return node;
+  }
+  current = (unvisited_node*) list->next;
+  last = list;
+
+  while(current){
+    if (current->distance > node->distance){
+      node->next = (struct unvisited_node*) current;
+      last->next = (struct unvisited_node*) node;
+      return list;
+    }
+    
+  }
+  last->next = (struct unvisited_node*) node;
+  return list;
+}
+
+bool buffered(unvisited_node* list, Coordinate c){
+  unvisited_node* current;
+  while (current!= NULL){
+    if (current->coord.x == c.x && current->coord.y == c.y){
+      return true;
+    }
+  }
+  return false;
+}
+
+bool parsed(path_node* path, Coordinate c){
+  path_node* current;
+  while (current!= NULL){
+    if (current->coord.x == c.x && current->coord.y == c.y){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+
+void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
+  path_node* closed = NULL;
+  unvisited_node* open = NULL;
+  Coordinate adj;
+  unvisited_node* current;
+  path_node* new_pn;
+  
+  closed = (path_node*) malloc(sizeof(path_node));
+  closed->coord.x = start.x;
+  closed->coord.y = start.y;
+  closed->tot_distance = (double)0.0;
+  closed->previous = NULL;
+  closed->next = NULL;
+  
+  /// aggiungo i primi 8 nodi al buffer (se percorribili)
+  adj.x = start.x - 1;
+  adj.y = start.y;
+  if (__can_walk(nm, adj)){
+    open = append_sorted(open, new_unvisited(adj, end));
+  }
+  adj.x = start.x + 1;
+  if (__can_walk(nm, adj)){
+    open = append_sorted(open, new_unvisited(adj, end));
+  }
+  adj.x = start.x;
+  adj.y = start.y - 1;
+  if (__can_walk(nm, adj)){
+    open = append_sorted(open, new_unvisited(adj, end));
+  }
+  adj.y = start.y + 1;
+  if (__can_walk(nm, adj)){
+    open = append_sorted(open, new_unvisited(adj, end));
+  }
+
+
+  while(open != NULL){
+    current = open;
+    open = current->next;
+    
+    if (current->coord.x == end.x && current->coord.y ==end.y){
+      ///se il nodo è il nodo destinazione
+      //libera la memoria e restituisci il percorso
+    }
+    new_pn = (path_node*) malloc(sizeof(path_node));
+    new_pn->coord.x = current->coord.x;
+    new_pn->coord.y = current->coord.y;
+    // new_pn->previous = Come ottengo l'equivalente di 
+    
+    
+    
+
+
+    
+  }
+  
+    
+  
+  
+  
+  
+}
+
+
+  
 
 int main(){
   printf("initializing navmesh statics...\n");
