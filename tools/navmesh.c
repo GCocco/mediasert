@@ -203,16 +203,16 @@ open_node* sorted_append(open_node* list, open_node* new_node){
   if (list == NULL){
     return new_node;
   }
-
+  
   if (list->h_score >= new_node->h_score){
     new_node->next = (struct open_node*)list;
     return new_node;
   }
-
+  
   open_node* current = (open_node*)list->next;
   open_node* last = list;
-
-
+  
+  
   while(current!=NULL){
     if (current->h_score >= new_node->h_score){
       last->next = (struct open_node*) new_node;
@@ -270,9 +270,68 @@ open_node* get_from_open(open_node* list, Coordinate coord){
 }
 
 void free_open(open_node* list){
-  free_open(list->next);
+  free_open((open_node*) list->next);
   free(list);
   return;
+}
+
+typedef struct{
+  Coordinate coord;
+  struct path_node* next;
+}path_node;
+
+path_node* new_path_node(Coordinate coord){
+  path_node* new_node = NULL;
+  new_node = malloc(sizeof(path_node));
+  new_node->coord = coord;
+  new_node->next = NULL;
+  return new_node; 
+}
+
+closed_node* pop_closed(closed_node** list, Coordinate coord){
+  closed_node* last;
+  closed_node* current;
+
+  if (*list == NULL){
+    printf("impossibile trovare il nodo indicato\n");
+    return NULL;
+  }
+
+  if (*list->coord.x == coord.x && *list->coord.y == coord.y){
+    current = *list;
+    *list = *list->next;
+    return current;
+  }
+  
+  last = *list;
+  current = last->next;
+  
+  while (current != NULL){
+    if (current->coord.x == coord.x && current->coord.y == coord.y){
+      last->next = current->next;
+      return current;
+    }
+    last = current;
+    current = current->next;
+  }
+  printf("impossibile trovare il nodo indicato\n");
+  return NULL;
+}
+
+node_path* reconstruct_path(nav_mesh* nm, Coordinate start, Coordinate end, closed_node** closed_set){
+  closed_node* current;
+  node_path* path = new_node_path(end);
+  node_path* path_node;
+  Coordinate current_coord;
+  current = pop_closed(closed_set, end);
+  current_coord = current->path;
+  free(current);
+
+  while (current_coord.x != start.x || current_coord.y != start.y){
+    current = pop_closed(closed_set, current_coord);
+    path_node = new_node_path(current->
+  }
+  
 }
 
 
@@ -283,10 +342,7 @@ void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
   Coordinate neighbors[8];
   open_node* open_set = create_open_node(start, end, neighbors[0], (double)0.0);
   closed_node* closed_set = NULL;
-
   open_node* current = NULL;
-  
-
   closed_node* found_closed;
   open_node* found_open;
   while(open_set != NULL){
@@ -328,45 +384,47 @@ void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
 
 
     for (int i=0; i<4; i++){
-      //check se walkable
-      found_closed = get_from_closed(closed_set, neighbors[i]);
-      if (found_closed!=NULL){
-	if(found_closed->f_score > current->f_score+SQRT2){
-	  found_closed->f_score = current->f_score+SQRT2;
-	  found_closed->path = current->coord;
-	}
-	else{
-	  found_open = get_from_open(open_set, neighbors[i]);
-	  if (found_open!=NULL){
-	    if (found_open->f_score > current->f_score + SQRT2){
-	      found_open->f_score = current->f_score + SQRT2;
-	      found_open->path = current->coord;
+      if (__can_walk(nm, neighbors[i])){
+	found_closed = get_from_closed(closed_set, neighbors[i]);
+	if (found_closed!=NULL){
+	  if(found_closed->f_score > current->f_score+SQRT2){
+	    found_closed->f_score = current->f_score+SQRT2;
+	    found_closed->path = current->coord;
+	  }
+	  else{
+	    found_open = get_from_open(open_set, neighbors[i]);
+	    if (found_open!=NULL){
+	      if (found_open->f_score > current->f_score + SQRT2){
+		found_open->f_score = current->f_score + SQRT2;
+		found_open->path = current->coord;
+	      }
+	      
+	    }else{
+	      open_set = sorted_append(open_set, create_open_node(neighbors[i], end,current->coord, current->f_score+SQRT2));
 	    }
-
-	  }else{
-	    open_set = sorted_append(open_set, create_open_node(neighbors[i], end,current->coord, current->f_score+SQRT2));
 	  }
 	}
       }
     }
     for (int i=4; i<8; i++){
-      //check se walkabile
-      found_closed = get_from_closed(closed_set, neighbors[i]);
-      if (found_closed!=NULL){
-	if(found_closed->f_score > current->f_score+1){
-	  found_closed->f_score = current->f_score+1;
-	  found_closed->path = current->coord;
-	}
-	else{
-	  found_open = get_from_open(open_set, neighbors[i]);
-	  if (found_open!=NULL){
-	    if (found_open->f_score > current->f_score + 1){
-	      found_open->f_score = current->f_score + 1;
-	      found_open->path = current->coord;
+      if(__can_walk(nm, neighbors[i])){
+	found_closed = get_from_closed(closed_set, neighbors[i]);
+	if (found_closed!=NULL){
+	  if(found_closed->f_score > current->f_score+1){
+	    found_closed->f_score = current->f_score+1;
+	    found_closed->path = current->coord;
+	  }
+	  else{
+	    found_open = get_from_open(open_set, neighbors[i]);
+	    if (found_open!=NULL){
+	      if (found_open->f_score > current->f_score + 1){
+		found_open->f_score = current->f_score + 1;
+		found_open->path = current->coord;
+	      }
+	      
+	    }else{
+	      open_set = sorted_append(open_set, create_open_node(neighbors[i], end, current->coord, current->f_score+1));
 	    }
-
-	  }else{
-	    open_set = sorted_append(open_set, create_open_node(neighbors[i], end, current->coord, current->f_score+1));
 	  }
 	}
       }
@@ -374,6 +432,7 @@ void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
     free(current);
   }
   printf("not founded\n");
+  return NULL;
 }
 
 
@@ -381,7 +440,7 @@ void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
 
   
 
-int main(){
+void main(){
   printf("initializing navmesh statics...\n");
   
   nav_mesh* nm = newNavmesh("./mynavmesh.csv");
@@ -394,7 +453,6 @@ int main(){
     printf("can't_walk");
   }
   
-  return 0;
+  return ;
 }
-
 
