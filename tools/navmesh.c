@@ -184,142 +184,197 @@ RICERCA PERCORSO
 **/
 
 
-typedef struct{  // struct for a list/set of nodes
+typedef struct{
   Coordinate coord;
-  struct grid_node* next;
-}grid_node;
+  double f_score;
+  Coordinate path;
+  struct closed_node* next;
+}closed_node;
 
-typedef struct{  // struct for a list of nodes containing the shortest path to self the distance of said path
+typedef struct{
   Coordinate coord;
-  float tot_distance;
-  struct path_node* previous;
-  struct path_node* next;
-}path_node;
+  Coordinate path;
+  double h_score;
+  double f_score;
+  struct open_node* next;
+}open_node;
 
-typedef struct{  // struct for a list of nodes 
-  Coordinate coord;
-  double distance;
-  struct unvisited_node* next;
-}unvisited_node;
-
-
-
-unvisited_node* new_unvisited(Coordinate c, Coordinate end){
-  unvisited_node* un = malloc(sizeof(unvisited_node));
-  un->coord.x = c.x;
-  un->coord.y = c.y;
-  un->next = NULL;
-  un->distance = sqrt(pow((double)c.x - (double)end.x, 2) +
-		      pow((double)c.y - (double)end.y, 2));
-  return un;
-}
-
-
-unvisited_node* append_sorted(unvisited_node* list, unvisited_node* node){
-  unvisited_node* current = NULL;
-  unvisited_node* last = NULL;
-  
+open_node* sorted_append(open_node* list, open_node* new_node){
   if (list == NULL){
-    return node;
+    return new_node;
   }
-  current = (unvisited_node*) list->next;
-  last = list;
 
-  while(current){
-    if (current->distance > node->distance){
-      node->next = (struct unvisited_node*) current;
-      last->next = (struct unvisited_node*) node;
+  if (list->h_score >= new_node->h_score){
+    new_node->next = (struct open_node*)list;
+    return new_node;
+  }
+
+  open_node* current = (open_node*)list->next;
+  open_node* last = list;
+
+
+  while(current!=NULL){
+    if (current->h_score >= new_node->h_score){
+      last->next = (struct open_node*) new_node;
+      new_node->next = (struct open_node*) current;
       return list;
     }
-    
+    last = current;
+    current = (open_node*) current->next;
   }
-  last->next = (struct unvisited_node*) node;
+  last->next = (struct open_node*)new_node;
   return list;
 }
 
-bool buffered(unvisited_node* list, Coordinate c){
-  unvisited_node* current;
-  while (current!= NULL){
-    if (current->coord.x == c.x && current->coord.y == c.y){
-      return true;
-    }
-  }
-  return false;
+double h_func(Coordinate current, Coordinate end){
+  return sqrt(pow(end.x-current.x, 2) + pow(end.y-current.y, 2));
 }
 
-bool parsed(path_node* path, Coordinate c){
-  path_node* current;
-  while (current!= NULL){
-    if (current->coord.x == c.x && current->coord.y == c.y){
-      return true;
-    }
-  }
-  return false;
+open_node* create_open_node(Coordinate coord, Coordinate end, Coordinate path, double f_score){
+  open_node* new_node = (open_node*) malloc(sizeof(open_node));
+  new_node->coord = coord;
+  new_node->h_score = h_func(coord, end);
+  new_node->f_score = f_score;
+  new_node->next = NULL;
+  return new_node;
+}
+
+closed_node* create_closed_node(Coordinate coord, double f_score, Coordinate path){
+  closed_node* new_node = (closed_node*) malloc(sizeof(closed_node));
+  new_node->coord = coord;
+  new_node->f_score = f_score;
+  new_node->path = path;
+  new_node->next = NULL;
+  return new_node;
 }
 
 
+closed_node* get_from_closed(closed_node* list, Coordinate coord){
+  while(list!=NULL){
+    if (list->coord.x == coord.x && list->coord.y == coord.y){
+      return list;
+    }
+    list = (closed_node*) list->next;
+  }
+  return NULL;
+}
+
+open_node* get_from_open(open_node* list, Coordinate coord){
+  while(list!=NULL){
+    if (list->coord.x == coord.x && list->coord.x == coord.y){
+      return list;
+    }
+    list = (open_node*) list->next;
+  }
+  return NULL;
+}
+
+void free_open(open_node* list){
+  free_open(list->next);
+  free(list);
+  return;
+}
+
+
+
+#define SQRT2 1.4142
 
 void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
-  path_node* closed = NULL;
-  unvisited_node* open = NULL;
-  Coordinate adj;
-  unvisited_node* current;
-  path_node* new_pn;
+  Coordinate neighbors[8];
+  open_node* open_set = create_open_node(start, end, neighbors[0], (double)0.0);
+  closed_node* closed_set = NULL;
+
+  open_node* current = NULL;
   
-  closed = (path_node*) malloc(sizeof(path_node));
-  closed->coord.x = start.x;
-  closed->coord.y = start.y;
-  closed->tot_distance = (double)0.0;
-  closed->previous = NULL;
-  closed->next = NULL;
-  
-  /// aggiungo i primi 8 nodi al buffer (se percorribili)
-  adj.x = start.x - 1;
-  adj.y = start.y;
-  if (__can_walk(nm, adj)){
-    open = append_sorted(open, new_unvisited(adj, end));
-  }
-  adj.x = start.x + 1;
-  if (__can_walk(nm, adj)){
-    open = append_sorted(open, new_unvisited(adj, end));
-  }
-  adj.x = start.x;
-  adj.y = start.y - 1;
-  if (__can_walk(nm, adj)){
-    open = append_sorted(open, new_unvisited(adj, end));
-  }
-  adj.y = start.y + 1;
-  if (__can_walk(nm, adj)){
-    open = append_sorted(open, new_unvisited(adj, end));
-  }
+
+  closed_node* found_closed;
+  open_node* found_open;
+  while(open_set != NULL){
+
+    current = open_set;
+    open_set = (open_node*) open_set->next;
 
 
-  while(open != NULL){
-    current = open;
-    open = current->next;
-    
-    if (current->coord.x == end.x && current->coord.y ==end.y){
-      ///se il nodo è il nodo destinazione
-      //libera la memoria e restituisci il percorso
+    if (current->coord.x == end.x && current->coord.y == end.y){
+      printf("founded\n");
+      //TODO: reconstruct path and free memory
+      free_open(open_set);
+      return;
     }
-    new_pn = (path_node*) malloc(sizeof(path_node));
-    new_pn->coord.x = current->coord.x;
-    new_pn->coord.y = current->coord.y;
-    // new_pn->previous = Come ottengo l'equivalente di 
+
+    neighbors[0].x = current->coord.x-1;
+    neighbors[0].y = current->coord.y-1;
     
-    
-    
+    neighbors[1].x = current->coord.x+1;
+    neighbors[1].y = current->coord.y-1;
+
+    neighbors[2].x = current->coord.x+1;
+    neighbors[2].y = current->coord.y+1;
+
+    neighbors[3].x = current->coord.x-1;
+    neighbors[3].y = current->coord.y+1;
+
+    neighbors[4].x = current->coord.x;
+    neighbors[4].y = current->coord.y-1;
+
+    neighbors[5].x = current->coord.x;
+    neighbors[5].y = current->coord.y+1;
+
+    neighbors[6].x = current->coord.x-1;
+    neighbors[6].y = current->coord.y;
+
+    neighbors[7].x = current->coord.x+1;
+    neighbors[7].y = current->coord.y;
 
 
-    
+    for (int i=0; i<4; i++){
+      found_closed = get_from_closed(closed_set, neighbors[i]);
+      if (found_closed!=NULL){
+	if(found_closed->f_score > current->f_score+SQRT2){
+	  found_closed->f_score = current->f_score+SQRT2;
+	  found_closed->path = current->coord;
+	}
+	else{
+	  found_open = get_from_open(open_set, neighbors[i]);
+	  if (found_open!=NULL){
+	    if (found_open->f_score > current->f_score + SQRT2){
+	      found_open->f_score = current->f_score + SQRT2;
+	      found_open->path = current->coord;
+	    }
+
+	  }else{
+	    open_set = sorted_append(open_set, create_open_node(neighbors[i], end,current->coord, current->f_score+SQRT2));
+	  }
+	}
+      }
+    }
+    for (int i=4; i<8; i++){
+      found_closed = get_from_closed(closed_set, neighbors[i]);
+      if (found_closed!=NULL){
+	if(found_closed->f_score > current->f_score+1){
+	  found_closed->f_score = current->f_score+1;
+	  found_closed->path = current->coord;
+	}
+	else{
+	  found_open = get_from_open(open_set, neighbors[i]);
+	  if (found_open!=NULL){
+	    if (found_open->f_score > current->f_score + 1){
+	      found_open->f_score = current->f_score + 1;
+	      found_open->path = current->coord;
+	    }
+
+	  }else{
+	    open_set = sorted_append(open_set, create_open_node(neighbors[i], end, current->coord, current->f_score+1));
+	  }
+	}
+      }
+    }
+    free(current);
   }
-  
-    
-  
-  
-  
-  
+  printf("not founded\n");
 }
+
+
 
 
   
