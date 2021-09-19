@@ -328,6 +328,7 @@ void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
 
 
     for (int i=0; i<4; i++){
+      //check se walkable
       found_closed = get_from_closed(closed_set, neighbors[i]);
       if (found_closed!=NULL){
 	if(found_closed->f_score > current->f_score+SQRT2){
@@ -349,6 +350,7 @@ void a_star(nav_mesh* nm, Coordinate start, Coordinate end){
       }
     }
     for (int i=4; i<8; i++){
+      //check se walkabile
       found_closed = get_from_closed(closed_set, neighbors[i]);
       if (found_closed!=NULL){
 	if(found_closed->f_score > current->f_score+1){
