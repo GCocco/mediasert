@@ -80,7 +80,6 @@ void _del_navmesh(nav_mesh* nm){
   }
   free(nm->boundings);
   free(nm);
-  printf("deleted navmesh from memory\n");
   return;
 }
 
@@ -133,9 +132,6 @@ nav_mesh* newNavmesh(char* filename){
 Coordinate find(nav_mesh*nm, double x, double y){
   Coordinate c;
   int i = 0;
-  printf("%lf\n", nm->x_coords[0]);
-  printf("%lf\n", x);
-  
   while (nm->x_coords[i] < x &&  i<nm->x_lines){
     i++;
   }
@@ -145,8 +141,6 @@ Coordinate find(nav_mesh*nm, double x, double y){
     i++;
   }
   c.y = i;
-
-  printf("%d, %d\n", c.x, c.y);
   return c;
 }
 
@@ -470,6 +464,28 @@ path_node* a_star(nav_mesh* nm, Coordinate start, Coordinate end){
   return NULL;
 }
 
+path_node* find_path(nav_mesh* nm, double start_x, double start_y, double end_x, double end_y){
+  Coordinate start, end;
+  path_node* path = NULL;
+  start = find(nm, start_x, start_y);
+  end = find(nm, end_x, end_y);
+  
+  if (!__can_walk(nm, start)||!__can_walk(nm, end)){
+    return NULL;
+  }
+  
+  path = a_star(nm, start, end);
+
+  path_node* tmp = path;
+
+  while(tmp!=NULL){
+    printf("(%d,%d) -> ", tmp->coord.x, tmp->coord.y);
+    tmp = (path_node*)tmp-> next;
+  }
+  printf("\n");
+  
+  return path;
+}
 
 
 
