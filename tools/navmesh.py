@@ -38,8 +38,9 @@ path_node._fields_ = [("coord", Coordinate),
 if __name__ == "__main__":
     nm = NavMesh("./mynavmesh.csv")
     
-    path = nm.find_path(.4, .3, .6, .2)
+    path = nm.find_path(.80, .06, .01, .01)
 
+    print("##########")
     print(path)
 
     pl = path_node.from_address(path)
