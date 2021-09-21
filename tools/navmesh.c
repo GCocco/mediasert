@@ -3,42 +3,32 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int count = 0;
 
+/*simple Coordinate structure*/
 typedef struct{
   int x;
   int y;
 }Coordinate;
 
 
-
-/**
-DEFINIZIONE NAVMESH 
- **/
+/*an abstract obstacle node, as y_coord it starts, y_coord it ends*/ 
 typedef struct{
   int coll_start;
   int coll_end;
   struct y_obstacle* next;
 }y_obstacle;
 
-
+/*adds an obstacle to the linked list*/
 y_obstacle* __append_obstacle(y_obstacle* obs, int start, int end){
   y_obstacle* new_node = NULL;
-  
   new_node = (y_obstacle*) malloc(sizeof(y_obstacle));
-
-  if (new_node == NULL){
-    exit(-1);
-  }
   new_node->next = NULL;  
   new_node->coll_start = start;
   new_node->coll_end = end;
-
   if (obs == NULL){
     return new_node;
   }
   y_obstacle* head = obs;
-  
   while(head->next != NULL){
     head = (y_obstacle*) head->next;
   }
@@ -46,21 +36,25 @@ y_obstacle* __append_obstacle(y_obstacle* obs, int start, int end){
   return obs;
 }
 
+/*frees the memory used by an y_obstacle linked list*/
 void __del_obstacle(y_obstacle* head){
-  if (head->next!=NULL){
-    __del_obstacle((y_obstacle*)head->next);
+  y_obstacle* next;
+  if (head==NULL){
+    return;
   }
+  next = (y_obstacle*) head->next;
   free(head);
-  return;
+  return __del_obstacle(next);
 }
 
-
+/*contains the info of a y coordinate in the mesh (start, end, obstacles)*/
 typedef struct {
   int start;
   y_obstacle* obstacles;
   int end;
 } abc_y;
 
+/*an abstract navmesh*/
 typedef struct {
   int x_lines;
   int y_lines;
@@ -69,24 +63,19 @@ typedef struct {
   abc_y* boundings;
 } nav_mesh;
 
-
+/*frees the memory used by a navmesh*/
 void _del_navmesh(nav_mesh* nm){
   free(nm->x_coords);
   free(nm->y_coords);
   for(int i=0; i<nm->x_lines; i++){
-    if (nm->boundings[i].obstacles != NULL){
-      __del_obstacle(nm->boundings[i].obstacles);
-    }
+    __del_obstacle(nm->boundings[i].obstacles);
   }
   free(nm->boundings);
   free(nm);
   return;
 }
 
-nav_mesh* __newNavmesh(){
-  nav_mesh* nm = (nav_mesh*) malloc(sizeof(nav_mesh));
-}
-
+/*loads the info of a navmesh from a file to given navmesh pointer*/
 void __loadFromFile(nav_mesh* nm, char* filename){
 
   FILE* fp = NULL;
@@ -122,13 +111,14 @@ void __loadFromFile(nav_mesh* nm, char* filename){
   return;
 }
 
+/*returns a pointer to a new navmesh loading data from given file*/
 nav_mesh* newNavmesh(char* filename){
-  nav_mesh* nm = __newNavmesh();
+  nav_mesh* nm = (nav_mesh*) malloc(sizeof(nav_mesh));
   __loadFromFile(nm, filename);
   return nm;
 }
 
-
+/*finds the closest point in the grid with given coordinates*/
 Coordinate find(nav_mesh*nm, double x, double y){
   Coordinate c;
   int i = 0;
@@ -144,12 +134,13 @@ Coordinate find(nav_mesh*nm, double x, double y){
   return c;
 }
 
-
+/*a position in worlds x,y coordinates*/
 typedef struct {
   double x;
   double y;
 } Position;
 
+/*returns the position of a Coordinate in world space*/
 Position from_coordinate(nav_mesh* nm, Coordinate coord){
   Position pos;
   pos.x = nm->x_coords[coord.x];
@@ -157,6 +148,7 @@ Position from_coordinate(nav_mesh* nm, Coordinate coord){
   return pos;
 }
 
+/*returns true if a given coordinate is walkable in the pointed navmesh*/
 bool __can_walk(nav_mesh* nm, Coordinate c){
   if (nm->boundings[c.x].start > c.y || nm->boundings[c.x].end < c.y){
     return false;
@@ -186,6 +178,7 @@ RICERCA PERCORSO
 **/
 
 
+/*a closed node linked list*/
 typedef struct{
   Coordinate coord;
   double f_score;
@@ -193,6 +186,7 @@ typedef struct{
   struct closed_node* next;
 }closed_node;
 
+/*a open node linked list*/
 typedef struct{
   Coordinate coord;
   Coordinate path;
@@ -201,6 +195,7 @@ typedef struct{
   struct open_node* next;
 }open_node;
 
+/*creates a closed_closed node*/
 closed_node* create_closed_node(open_node* from_open){
   closed_node* new_node;
 
@@ -214,6 +209,7 @@ closed_node* create_closed_node(open_node* from_open){
 
 }
 
+/*appends a open_node in the list according to it's f_score value*/
 open_node* sorted_append(open_node* list, open_node* new_node){
   if (list == NULL){
     return new_node;
@@ -241,10 +237,12 @@ open_node* sorted_append(open_node* list, open_node* new_node){
   return list;
 }
 
+/*the function extimating the distance from target node (simple distance between points)*/
 double h_func(Coordinate current, Coordinate end){
   return sqrt(pow(end.x-current.x, 2) + pow(end.y-current.y, 2));
 }
 
+/*creates an open node*/
 open_node* create_open_node(Coordinate coord, Coordinate end, Coordinate path, double f_score){
   open_node* new_node = (open_node*) malloc(sizeof(open_node));
   new_node->coord = coord;
@@ -255,6 +253,7 @@ open_node* create_open_node(Coordinate coord, Coordinate end, Coordinate path, d
   return new_node;
 }
 
+/*returns the pointer of a closed_node in a list if present, NULL otherwise*/
 closed_node* get_from_closed(closed_node* list, Coordinate coord){
   while(list!=NULL){
     if (list->coord.x == coord.x && list->coord.y == coord.y){
@@ -265,6 +264,7 @@ closed_node* get_from_closed(closed_node* list, Coordinate coord){
   return NULL;
 }
 
+/*returns the pointer of a open_node in a list if present, NULL otherwise*/
 open_node* get_from_open(open_node* list, Coordinate coord){
   while(list!=NULL){
     if (list->coord.x == coord.x && list->coord.x == coord.y){
@@ -275,6 +275,8 @@ open_node* get_from_open(open_node* list, Coordinate coord){
   return NULL;
 }
 
+/*free the memory occupied by a open_node list*/
+//TODO: tail recursion
 void free_open(open_node* list){
   if (list!=NULL){
     free_open((open_node*) list->next);
@@ -284,11 +286,13 @@ void free_open(open_node* list){
   return;
 }
 
+/*a path node for a linked list*/
 typedef struct{
   Coordinate coord;
   struct path_node* next;
 }path_node;
 
+/*creates a new path_node with given info*/
 path_node* new_path_node(Coordinate coord){
   path_node* new_node = NULL;
   new_node = malloc(sizeof(path_node));
@@ -297,6 +301,7 @@ path_node* new_path_node(Coordinate coord){
   return new_node; 
 }
 
+/*pops a closed_node from a list from a closed_node list pointer*/
 closed_node* pop_closed(closed_node** list, Coordinate coord){
   closed_node* last;
   closed_node* current;
@@ -324,6 +329,8 @@ closed_node* pop_closed(closed_node** list, Coordinate coord){
   return NULL;
 }
 
+/*frees the memory occupied by a closed_node list*/
+//TODO: tail recursion
 void free_closed_set(closed_node* list){
   if (list != NULL){
     free_closed_set((closed_node*)list->next);
@@ -331,8 +338,8 @@ void free_closed_set(closed_node* list){
   free(list);
 }
 
-
-
+//DEBUG
+/*prints a closed set*/
 void print_closed_set(closed_node* list){
   while (list != NULL){
     printf("(%d,%d)-(%d,%d)\n", list->coord.x, list->coord.y, list->path.x, list->path.y);
@@ -341,7 +348,7 @@ void print_closed_set(closed_node* list){
   return;
 }
 
-
+/*returns a path from a closed_node list pointer, a start and an end Coordinate*/
 path_node* reconstruct_path(Coordinate start, Coordinate end, closed_node** closed_set){
   closed_node* current;
   path_node* path = NULL;
@@ -363,8 +370,10 @@ path_node* reconstruct_path(Coordinate start, Coordinate end, closed_node** clos
 }
 
 
-
 #define SQRT2 1.4142
+
+/*A* algorythm, returns a path walkable in the navmesh*/
+//TODO: resort open_set list when finding a better path
 
 path_node* a_star(nav_mesh* nm, Coordinate start, Coordinate end){
   Coordinate neighbors[8];
@@ -377,7 +386,7 @@ path_node* a_star(nav_mesh* nm, Coordinate start, Coordinate end){
   open_node* found_open;
   path_node* path = NULL;
 
-
+  /*helper function called for each neighbor Coordinate*/
   void explore_neighbor(Coordinate _coor, double dist){
     if (__can_walk(nm, _coor)){
       found_closed = get_from_closed(closed_set, _coor);
@@ -401,32 +410,27 @@ path_node* a_star(nav_mesh* nm, Coordinate start, Coordinate end){
   }
   
   while(open_set != NULL){
-
     current = open_set;
     open_set = (open_node*) open_set->next;
-
+    
     if (current->coord.x == end.x && current->coord.y == end.y){
-      
       found_closed = create_closed_node(current);
-
       found_closed->next = (struct closed_node*)closed_set;
       closed_set = found_closed;
-
       print_closed_set(closed_set);
       free_open(open_set);
-
       path = reconstruct_path(start, end, &closed_set);
       free_closed_set(closed_set);
       return path;
     }
-
+    
 
     neighbors[0].x = current->coord.x-1;
     neighbors[0].y = current->coord.y-1;
     
     neighbors[1].x = current->coord.x+1;
     neighbors[1].y = current->coord.y-1;
-
+    
     neighbors[2].x = current->coord.x+1;
     neighbors[2].y = current->coord.y+1;
 
@@ -462,6 +466,7 @@ path_node* a_star(nav_mesh* nm, Coordinate start, Coordinate end){
   return NULL;
 }
 
+/*returns the path between two given points*/
 path_node* find_path(nav_mesh* nm, double start_x, double start_y, double end_x, double end_y){
   Coordinate start, end;
   path_node* path = NULL;
@@ -475,7 +480,7 @@ path_node* find_path(nav_mesh* nm, double start_x, double start_y, double end_x,
   
   path = a_star(nm, start, end);
   path_node* tmp = path;
-
+  
   while(tmp!=NULL){
     printf("(%d,%d) -> ", tmp->coord.x, tmp->coord.y);
     tmp = (path_node*)tmp-> next;
@@ -487,7 +492,7 @@ path_node* find_path(nav_mesh* nm, double start_x, double start_y, double end_x,
 
 
 
-  
+
 
 void main(){
   printf("initializing navmesh statics...\n");
