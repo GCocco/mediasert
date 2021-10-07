@@ -64,7 +64,7 @@ typedef struct {
 } nav_mesh;
 
 /*frees the memory used by a navmesh*/
-void _del_navmesh(nav_mesh* nm){
+void del_navmesh(nav_mesh* nm){
   free(nm->x_coords);
   free(nm->y_coords);
   for(int i=0; i<nm->x_lines; i++){
@@ -291,6 +291,15 @@ typedef struct{
   Coordinate coord;
   struct path_node* next;
 }path_node;
+
+/*frees the memory for a allocated path_node*/
+void free_path(path_node* node){
+  if (node!=NULL){
+    free_path((path_node*)node->next);
+    }
+  free(node);
+  return;
+}
 
 /*creates a new path_node with given info*/
 path_node* new_path_node(Coordinate coord){
