@@ -10,7 +10,6 @@ typedef struct{
   int y;
 }Coordinate;
 
-
 /*an abstract obstacle node, as y_coord it starts, y_coord it ends*/ 
 typedef struct{
   int coll_start;
@@ -62,6 +61,20 @@ typedef struct {
   double* y_coords;
   abc_y* boundings;
 } nav_mesh;
+
+typedef struct {
+  double x;
+  double y;
+} world_coordinates;
+
+
+world_coordinates get_world_coordinates(nav_mesh* nm, Coordinate coor){
+  world_coordinates = wc;
+  wc.x = nm->x_coords[coor.x];
+  wc.y = nm->y_coords[coor.y];
+  return wc;
+}
+
 
 /*frees the memory used by a navmesh*/
 void del_navmesh(nav_mesh* nm){
