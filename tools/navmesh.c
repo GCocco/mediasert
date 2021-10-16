@@ -69,7 +69,7 @@ typedef struct {
 
 
 world_coordinates get_world_coordinates(nav_mesh* nm, Coordinate coor){
-  world_coordinates = wc;
+  world_coordinates wc;
   wc.x = nm->x_coords[coor.x];
   wc.y = nm->y_coords[coor.y];
   return wc;
